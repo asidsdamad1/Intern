@@ -1,8 +1,8 @@
 package com.company.datastructure;
 
 public class HashTable<E, T> {
-    private final int INITIAL_SIZE = 16;  // NumBucket
     private final HashEntry<E, T>[] data; // LinkedList
+    private int INITIAL_SIZE = 16;  // NumBucket
     private int size;
 
     static class HashEntry<E, T> {
@@ -23,6 +23,12 @@ public class HashTable<E, T> {
 
     HashTable() {
         size = 0;
+        data = new HashEntry[INITIAL_SIZE];
+    }
+
+    HashTable(int capacity) {
+        size = 0;
+        INITIAL_SIZE = capacity;
         data = new HashEntry[INITIAL_SIZE];
     }
 
@@ -112,12 +118,17 @@ public class HashTable<E, T> {
     }
 
     public void display(HashTable<E, T> hashTable) {
+        System.out.print("HashTable:  { ");
         for (HashEntry a :
                 hashTable.data) {
-            if (a == null) continue;
-            a.display();
+
+            while (a != null) {
+                a.display();
+                a = a.next;
+            }
+
         }
-        System.out.println();
+        System.out.println("}");
     }
 
     public static void main(String[] args) {
@@ -130,8 +141,7 @@ public class HashTable<E, T> {
 
         System.out.println("size: " + hashTable.getSize());
         System.out.println("remove key first: " + hashTable.remove("first"));
-        System.out.println("remove key first again: " + hashTable.remove("first"));
-
+//        System.out.println("remove key first again: " + hashTable.remove("first"));
 
         hashTable.display(hashTable);
 
