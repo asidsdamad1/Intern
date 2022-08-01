@@ -3,69 +3,66 @@ package com.company.algorithm;
 
 public class MergeSort {
 
-    public void merging(int arr[], int temp[], int low, int mid, int high) {
-        int l1, l2, i;
+    public void merge(int arr[], int left, int mid, int right) {
+        int sizeArrLeft = mid - left + 1;
+        int sizeArrRight = right - mid;
 
-        l1 = low;
-        l2 = mid + 1;
-        for (i = low; l1 <= mid && l2 <= high; i++) {
-            if (arr[l1] <= arr[l2]) {
-                temp[i] = arr[l1++];
-            } else {
-                temp[i] = arr[l2++];
-            }
+        int[] leftArr = new int[sizeArrLeft];
+        int[] rightArr = new int[sizeArrRight];
+
+        for (int i = 0; i < sizeArrLeft; i++) {
+            leftArr[i] = arr[left + i];
         }
 
-        while (l1 <= mid) {
-            temp[i++] = arr[l1++];
+        for (int i = 0; i < sizeArrRight; i++) {
+            rightArr[i] = arr[mid + i + 1];
         }
-        while (l2 <= high) {
-            temp[i++] = arr[l2++];
+
+        int indexOfLeftArr = 0, indexOfRightArr = 0, indexOfMergedArr = left;
+
+        while (indexOfLeftArr < sizeArrLeft && indexOfRightArr < sizeArrRight) {
+            if(leftArr[indexOfLeftArr] <= rightArr[indexOfRightArr])
+                arr[indexOfMergedArr++] =  leftArr[indexOfLeftArr++];
+            else
+                arr[indexOfMergedArr++] =  rightArr[indexOfRightArr++];
         }
-        for (i = low; i <= high; i++) {
-            arr[i] = temp[i];
-        }
+
+        while (indexOfLeftArr < sizeArrLeft)
+            arr[indexOfMergedArr++] = leftArr[indexOfLeftArr++];
+
+        while (indexOfRightArr < sizeArrRight)
+            arr[indexOfMergedArr++] = rightArr[indexOfRightArr++];
+
+
     }
 
-    public void sort(int arr[], int temp[], int low, int high) {
+    public void sort(int arr[], int left, int right) {
         int mid;
 
-        if (low < high) {
-            mid = (low + high) / 2;
-            sort(arr, temp, low, mid);
-            sort(arr, temp, mid + 1, high);
-            merging(arr, temp, low, mid, high);
-            // hien thi mang
-            display(arr);
-        } else {
-            return;
+        if (left < right) {
+            mid = left + (right - left) / 2;
+            sort(arr, left, mid);
+            sort(arr, mid + 1, right);
+            merge(arr, left, mid, right);
+
         }
     }
 
     public void display(int arr[]) {
-        int i;
-        System.out.print("[");
-
-        // Duyet qua tat ca phan tu
-        for (i = 0; i < arr.length; i++) {
-            System.out.print(arr[i] + " ");
-        }
-
-        System.out.print("]\n");
+        System.out.println("=======================");
+        for (int j : arr) System.out.print(j + " ");
+        System.out.println();
     }
 
     public static void main(String[] args) {
         // khoi tao mang arr
         int arr[] = {6, 7, 0, 2, 8, 1, 3, 9, 4, 5};
-        int temp[] = new int[10];
 
-        MergeSort sapXeptron = new MergeSort();
-        System.out.println("Mang du lieu dau vao: ");
-        sapXeptron.display(arr);
-        System.out.println("-----------------------------");
-        sapXeptron.sort(arr, temp, 0, arr.length - 1);
-        System.out.println("-----------------------------");
-        System.out.println("\nMang sau khi da sap xep: ");
-        sapXeptron.display(arr);
+
+        MergeSort mergeSort = new MergeSort();
+        mergeSort.display(arr);
+        mergeSort.sort(arr, 0, arr.length - 1);
+        mergeSort.display(arr);
+
     }
 }

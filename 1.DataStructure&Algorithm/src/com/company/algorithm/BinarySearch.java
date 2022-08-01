@@ -7,9 +7,9 @@ public class BinarySearch {
             int mid = left + (right - left) / 2;
             if (arr[mid] == x) return mid;
             if (arr[mid] < x)
-                //giá trị tại mid < x tìm tiếp bên trái
+                // value at mid < x search left
                 return binarySearch(arr, mid + 1, right, x);
-            //giá trị tại mid > x tìm tiếp bên phải
+            // value at  mid > x search right
             return binarySearch(arr, left, mid - 1, x);
         }
         return -1;
