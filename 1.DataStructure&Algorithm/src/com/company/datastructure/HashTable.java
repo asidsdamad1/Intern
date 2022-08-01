@@ -119,12 +119,12 @@ public class HashTable<E, T> {
 
     public void display(HashTable<E, T> hashTable) {
         System.out.print("HashTable:  { ");
-        for (HashEntry a :
+        for (HashEntry item :
                 hashTable.data) {
 
-            while (a != null) {
-                a.display();
-                a = a.next;
+            while (item != null) {
+                item.display();
+                item = item.next;
             }
 
         }
