@@ -67,7 +67,7 @@ public class DoublyLinkedList<E> {
     }
 
     // Given a node as prev_node, insert a new node after the given node
-    public void insertAfter(E data, int index) {
+    public void insertAtIndex(E data, int index) {
         if (index < 0 || index > size) {
             throw new StackOverflowError("Index at " + index + " is not valid");
         }
@@ -116,7 +116,6 @@ public class DoublyLinkedList<E> {
         size--;
     }
 
-
     public void printForward() {
         Node current = head;
 
@@ -151,7 +150,7 @@ public class DoublyLinkedList<E> {
         System.out.println("size: " + ddl.size);
 
         System.out.println("==============");
-        ddl.insertAfter("e ", 3);
+        ddl.insertAtIndex("e ", 3);
         ddl.printForward();
         System.out.println("size: " + ddl.size);
 
