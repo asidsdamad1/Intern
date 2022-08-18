@@ -2,7 +2,6 @@ package com.company.algorithm;
 
 
 public class MergeSort {
-
     public void merge(int arr[], int left, int mid, int right) {
         int sizeArrLeft = mid - left + 1;
         int sizeArrRight = right - mid;
@@ -18,20 +17,20 @@ public class MergeSort {
             rightArr[i] = arr[mid + i + 1];
         }
 
-        int indexOfLeftArr = 0, indexOfRightArr = 0, indexOfMergedArr = left;
+        int indexLeft = 0, indexRight = 0, indexMerged = left;
 
-        while (indexOfLeftArr < sizeArrLeft && indexOfRightArr < sizeArrRight) {
-            if(leftArr[indexOfLeftArr] <= rightArr[indexOfRightArr])
-                arr[indexOfMergedArr++] =  leftArr[indexOfLeftArr++];
+        while (indexLeft < sizeArrLeft && indexRight < sizeArrRight) {
+            if(leftArr[indexLeft] <= rightArr[indexRight])
+                arr[indexMerged++] =  leftArr[indexLeft++];
             else
-                arr[indexOfMergedArr++] =  rightArr[indexOfRightArr++];
+                arr[indexMerged++] =  rightArr[indexRight++];
         }
 
-        while (indexOfLeftArr < sizeArrLeft)
-            arr[indexOfMergedArr++] = leftArr[indexOfLeftArr++];
+        while (indexLeft < sizeArrLeft)
+            arr[indexMerged++] = leftArr[indexLeft++];
 
-        while (indexOfRightArr < sizeArrRight)
-            arr[indexOfMergedArr++] = rightArr[indexOfRightArr++];
+        while (indexRight < sizeArrRight)
+            arr[indexMerged++] = rightArr[indexRight++];
 
 
     }
@@ -48,7 +47,7 @@ public class MergeSort {
         }
     }
 
-    public void display(int arr[]) {
+    public void display(int[] arr) {
         System.out.println("=======================");
         for (int j : arr) System.out.print(j + " ");
         System.out.println();
@@ -56,8 +55,7 @@ public class MergeSort {
 
     public static void main(String[] args) {
         // khoi tao mang arr
-        int arr[] = {6, 7, 0, 2, 8, 1, 3, 9, 4, 5};
-
+        int[] arr = {6, 7, 0, 2, 8, 1, 3, 9, 4, 5};
 
         MergeSort mergeSort = new MergeSort();
         mergeSort.display(arr);

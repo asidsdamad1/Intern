@@ -17,8 +17,7 @@ public class BinarySearch {
 
     public static void main(String[] args) {
         int[] arr = new int[]{1, 3, 6, 12, 14, 17, 24, 27, 67, 99, 565, 3442};
-        int x = 0;
-        int result = binarySearch(arr, 0, arr.length - 1, x) + 1;
+        int x = 0;int result = binarySearch(arr, 0, arr.length - 1, x) + 1;
 
         if (result == 0)
             System.out.println(x + " không có trong mảng");

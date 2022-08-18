@@ -91,7 +91,7 @@ public class HashTable<E, T> {
         return head.value;
     }
 
-    public T get(E key) {
+    public T getValue(E key) {
 
         // Get the index
         int index = getIndex(key);
@@ -99,7 +99,7 @@ public class HashTable<E, T> {
         // Get the current list of entries
         HashEntry<E, T> entries = data[index];
 
-        // if we have existing entries against this key...
+
         if (entries != null) {
             while (!entries.key.equals(key) && entries.next != null) {
                 entries = entries.next;
@@ -141,7 +141,7 @@ public class HashTable<E, T> {
 
         System.out.println("size: " + hashTable.getSize());
         System.out.println("remove key first: " + hashTable.remove("first"));
-//        System.out.println("remove key first again: " + hashTable.remove("first"));
+        System.out.println("Value of second: " + hashTable.getValue("second"));
 
         hashTable.display(hashTable);
 
