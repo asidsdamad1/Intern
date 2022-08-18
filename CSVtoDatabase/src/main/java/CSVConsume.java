@@ -18,7 +18,6 @@ public class CSVConsume {
 
         String filePath = "E:\\java\\core\\5mSalesRecords1.csv";
 
-        int batchSize = 500000;
 
         Connection connection = null;
 
@@ -46,7 +45,6 @@ public class CSVConsume {
             BufferedReader lineReader = new BufferedReader(new FileReader(filePath));
 
             String lineText = null;
-            int count = 0;
 
             lineReader.readLine();
             while ((lineText = lineReader.readLine()) != null) {
@@ -87,8 +85,7 @@ public class CSVConsume {
                 statement.setDouble(13, withBigDecimal(Double.parseDouble(totalCost), 2));
                 statement.setDouble(14, withBigDecimal(Double.parseDouble(totalProfit), 2));
                 statement.addBatch();
-                if (count % batchSize == 0)
-                    statement.executeBatch();
+                statement.executeBatch();
             }
             lineReader.close();
             statement.executeBatch();
