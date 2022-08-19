@@ -3,31 +3,29 @@ package service;
 import dto.EmployeeDTO;
 import model.Employee;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
-
 public class EmployeeServiceImpl {
+    String csvFile = "data.csv";
 
     public boolean validate(EmployeeDTO dto) {
         String phoneRegex = "\\d{10}";
         String birthDateRegex = "^(((0[1-9]|[12][0-9]|30)[/]?(0[13-9]|1[012])|31[/]?(0[13578]|1[02])|(0[1-9]|1[0-9]|2[0-8])[/]?02)[/]?[0-9]{4}|29[/]?02[/]?([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00))$";
-        String emailRegex = "^[a-zA-Z0-9.! #$%&'*+/=? ^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\. [a-zA-Z0-9-]+)*$";
+        String emailRegex = "^(([^<>()\\\\.,;:\\s@\"]+(\\.[^<>()\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
 
-        if(!dto.getBirthDate().matches(birthDateRegex)) {
+        if (!dto.getBirthDate().matches(birthDateRegex)) {
             System.out.println("Ngày sinh không đúng định dạng dd/MM/yyyy");
             return false;
         }
-        if(!dto.getPhone().matches(phoneRegex)) {
+        if (!dto.getPhone().matches(phoneRegex)) {
             System.out.println("Số điên thoại phải có 10 số");
             return false;
         }
-        if(!dto.getEmail().matches(emailRegex)) {
+        if (!dto.getEmail().matches(emailRegex)) {
             System.out.println("Email không đúng định dạng");
             return false;
         }
@@ -35,54 +33,93 @@ public class EmployeeServiceImpl {
     }
 
     public Employee save(EmployeeDTO dto) {
-        if(!validate(dto))  return null;
+        if (!validate(dto)) return null;
 
         FileWriter fw = null;
         try {
-            String csvFile = "data.csv";
-
             fw = new FileWriter(csvFile, true);
-            BufferedWriter bw = new BufferedWriter (fw);
+            BufferedWriter bw = new BufferedWriter(fw);
 
-            bw.write(dto.getSsn()+",");
-            bw.write(dto.getFirstName()+",");
-            bw.write(dto.getLastName()+",");
-            bw.write(dto.getBirthDate()+",");
-            bw.write(dto.getPhone()+",");
-            bw.write(dto.getEmail()+"\n");
+            bw.write(dto.getSsn() + ",");
+            bw.write(dto.getFirstName() + ",");
+            bw.write(dto.getLastName() + ",");
+            bw.write(dto.getBirthDate() + ",");
+            bw.write(dto.getPhone() + ",");
+            bw.write(dto.getEmail() + "\n");
 
             bw.close();
             fw.close();
 
             System.out.println("Thêm thành công");
-        }  catch (IOException exception)  {
+        } catch (IOException exception) {
             exception.printStackTrace();
         }
 
-        Employee entity  = new Employee() {
+        Employee entity = new Employee() {};
 
-            public void setSsn(String ssn) {
-                super.setSsn(ssn);
-            }
-        };
+        entity.setSsn(dto.getSsn());
+        entity.setFirstName(dto.getFirstName());
+        entity.setLastName(dto.getLastName());
+        entity.setBirthDate(dto.getBirthDate());
+        entity.setPhone(dto.getPhone());
+        entity.setEmail(dto.getEmail());
 
         return entity;
     }
 
 
     public List<Employee> getAll() {
-        return new ArrayList<>();
-    }
+        List<Employee> employeeList = new ArrayList<>();
+        try {
+            BufferedReader lineReader = new BufferedReader(new FileReader(csvFile));
+            String lineText = null;
+            Employee entity = new Employee() {};
+
+            while ((lineText = lineReader.readLine()) != null) {
+                String[] data = lineText.split(",");
+                entity.setSsn(data[0]);
+                entity.setFirstName(data[1]);
+                entity.setLastName(data[2]);
+                entity.setBirthDate(data[3]);
+                entity.setPhone(data[4]);
+                entity.setEmail(data[5]);
 
 
-    public Employee search() {
-        Employee entity  = new Employee() {
-
-            public void setSsn(String ssn) {
-                super.setSsn(ssn);
+                employeeList.add(entity);
             }
-        };
-
-        return entity;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return employeeList;
     }
+
+
+    public List<Employee> searchByName(String keyword) {
+        List<Employee> employeeList = new ArrayList<>();
+        try {
+            BufferedReader lineReader = new BufferedReader(new FileReader(csvFile));
+            String lineText = null;
+            Employee entity = new Employee() {};
+
+            while ((lineText = lineReader.readLine()) != null) {
+                String[] data = lineText.split(",");
+
+                entity.setFirstName(data[1]);
+                if(!entity.getFirstName().equals(keyword))
+                    return null;
+
+                entity.setSsn(data[0]);
+                entity.setLastName(data[2]);
+                entity.setBirthDate(data[3]);
+                entity.setPhone(data[4]);
+                entity.setEmail(data[5]);
+
+                employeeList.add(entity);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return employeeList;
+    }
+
 }

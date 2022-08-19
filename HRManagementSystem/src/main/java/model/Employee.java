@@ -72,4 +72,16 @@ public abstract class Employee {
 
     }
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "ssn='" + ssn + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDate='" + birthDate + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                '}'  + "\n";
+    }
+
 }

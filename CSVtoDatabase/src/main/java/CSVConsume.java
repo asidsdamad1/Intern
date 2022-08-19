@@ -70,6 +70,7 @@ public class CSVConsume {
 
                 String[] str1 = shipDate.split("/");
                 String shipDateFormat = str1[2] + "-" + str1[0] + "-" + str1[1];
+
                 statement.setString(1, region);
                 statement.setString(2, country);
                 statement.setString(3, itemType);
