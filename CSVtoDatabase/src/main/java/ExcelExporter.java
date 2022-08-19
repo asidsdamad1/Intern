@@ -78,6 +78,7 @@ public class ExcelExporter {
 
     private void writeDataLines(ResultSet result, XSSFWorkbook workbook, XSSFSheet sheet)
             throws SQLException {
+
         ResultSetMetaData metaData =  result.getMetaData();
         int numberOfColumns = metaData.getColumnCount();
 
