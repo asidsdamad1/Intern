@@ -90,6 +90,7 @@ public class CSVConsume {
             }
             lineReader.close();
             statement.executeBatch();
+
             connection.commit();
             connection.close();
             System.out.println("Data has been inserted successfully.");
