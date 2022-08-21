@@ -69,19 +69,14 @@ public abstract class Employee {
     }
 
     public void display() {
-
-    }
-
-    @Override
-    public String toString() {
-        return "Employee{" +
+        System.out.println("Employee{" +
                 "ssn='" + ssn + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", birthDate='" + birthDate + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                '}'  + "\n";
+                '}'  + "\n");
     }
 
 }

@@ -5,7 +5,6 @@ import model.Employee;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -32,30 +31,32 @@ public class EmployeeServiceImpl {
         return true;
     }
 
-    public Employee save(EmployeeDTO dto) {
-        if (!validate(dto)) return null;
-
+    public Employee save(EmployeeDTO dto) throws IOException {
         FileWriter fw = null;
+        BufferedWriter bw = null;
+
         try {
             fw = new FileWriter(csvFile, true);
-            BufferedWriter bw = new BufferedWriter(fw);
+            bw = new BufferedWriter(fw);
 
             bw.write(dto.getSsn() + ",");
             bw.write(dto.getFirstName() + ",");
             bw.write(dto.getLastName() + ",");
             bw.write(dto.getBirthDate() + ",");
             bw.write(dto.getPhone() + ",");
-            bw.write(dto.getEmail() + "\n");
-
-            bw.close();
-            fw.close();
+            bw.write(dto.getEmail());
+            bw.write("\n");
 
             System.out.println("Thêm thành công");
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } finally {
+            if (fw != null)
+                fw.close();
+            if (bw != null)
+                bw.close();
         }
 
-        Employee entity = new Employee() {};
+        Employee entity = new Employee() {
+        };
 
         entity.setSsn(dto.getSsn());
         entity.setFirstName(dto.getFirstName());
@@ -68,12 +69,14 @@ public class EmployeeServiceImpl {
     }
 
 
-    public List<Employee> getAll() {
+    public List<Employee> getAll() throws IOException {
         List<Employee> employeeList = new ArrayList<>();
+        BufferedReader lineReader = null;
         try {
-            BufferedReader lineReader = new BufferedReader(new FileReader(csvFile));
+            lineReader = new BufferedReader(new FileReader(csvFile));
             String lineText = null;
-            Employee entity = new Employee() {};
+            Employee entity = new Employee() {
+            };
 
             while ((lineText = lineReader.readLine()) != null) {
                 String[] data = lineText.split(",");
@@ -87,25 +90,34 @@ public class EmployeeServiceImpl {
 
                 employeeList.add(entity);
             }
+
+            if (employeeList.size() == 0)
+                return null;
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (lineReader != null)
+                lineReader.close();
         }
+
         return employeeList;
     }
 
 
-    public List<Employee> searchByName(String keyword) {
+    public List<Employee> searchByName(String keyword) throws IOException {
         List<Employee> employeeList = new ArrayList<>();
+        BufferedReader lineReader = null;
         try {
-            BufferedReader lineReader = new BufferedReader(new FileReader(csvFile));
+            lineReader = new BufferedReader(new FileReader(csvFile));
             String lineText = null;
-            Employee entity = new Employee() {};
+            Employee entity = new Employee() {
+            };
 
             while ((lineText = lineReader.readLine()) != null) {
                 String[] data = lineText.split(",");
 
                 entity.setFirstName(data[1]);
-                if(!entity.getFirstName().equals(keyword))
+                if (!entity.getFirstName().equals(keyword))
                     return null;
 
                 entity.setSsn(data[0]);
@@ -116,8 +128,12 @@ public class EmployeeServiceImpl {
 
                 employeeList.add(entity);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (lineReader != null)
+                lineReader.close();
         }
         return employeeList;
     }

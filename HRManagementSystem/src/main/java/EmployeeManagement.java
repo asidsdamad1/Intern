@@ -3,13 +3,12 @@ import model.Employee;
 import service.EmployeeServiceImpl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class EmployeeManagement {
 
-    private void menu()  {
+    private void menu() {
         System.out.println("===================================");
         System.out.println("1. Thêm nhân viên ");
         System.out.println("2. Hiển thị thông tin nhân viên ");
@@ -20,7 +19,7 @@ public class EmployeeManagement {
         System.out.println("Nhập lựa chọn:  ");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
         EmployeeServiceImpl service = new EmployeeServiceImpl();
         EmployeeManagement management = new EmployeeManagement();
@@ -46,17 +45,30 @@ public class EmployeeManagement {
                     System.out.print("Nhập ngày email: ");
                     employeeDTO.setEmail(sc.next());
 
-                    System.out.println(service.save(employeeDTO));
+                    if(service.validate(employeeDTO))
+                        service.save(employeeDTO).display();
+
                     management.menu();
                     break;
                 case 2:
-                    System.out.println(service.getAll());
+                    List<Employee> employees = service.getAll();
+                    if (employees == null) System.out.println("Không có nhân viên");
+                    else
+                        for(Employee employee: employees)
+                            employee.display();
+
                     management.menu();
                     break;
                 case 3:
                     System.out.print("Nhập tên nhân viên: ");
-                    String keyword = sc.next();
-                    System.out.println(service.searchByName(keyword));
+                    String name = sc.next();
+
+                    List<Employee> employeesByName = service.searchByName(name);
+                    if(employeesByName == null) System.out.println("Không có nhân viên tên: " + name);
+                    else
+                        for(Employee employee: employeesByName)
+                            employee.display();
+
                     management.menu();
                     break;
                 default:
@@ -65,18 +77,5 @@ public class EmployeeManagement {
             }
         } while (!checkExit);
 
-
-
-        /* menu 4 chuc nang:
-            1. them nhan vien (luu vao file)
-                - validate:
-                    + birthDate theo format: dd/MM/yyyy.
-                    + phone 10 so.
-                    + email dung  dinh dang.
-//
-            2. hien thi thong tin nhan vien. (doc tu file csv)
-            3. tim kiem (theo).
-            4. thoat.
-        * */
     }
 }
