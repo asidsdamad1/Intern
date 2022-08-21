@@ -17,20 +17,20 @@ public class MergeSort {
             rightArr[i] = arr[mid + i + 1];
         }
 
-        int indexLeft = 0, indexRight = 0, indexMerged = left;
+        int iLeft = 0, iRight = 0, indexMerged = left;
 
-        while (indexLeft < sizeArrLeft && indexRight < sizeArrRight) {
-            if(leftArr[indexLeft] <= rightArr[indexRight])
-                arr[indexMerged++] =  leftArr[indexLeft++];
+        while (iLeft < sizeArrLeft && iRight < sizeArrRight) {
+            if(leftArr[iLeft] <= rightArr[iRight])
+                arr[indexMerged++] =  leftArr[iLeft++];
             else
-                arr[indexMerged++] =  rightArr[indexRight++];
+                arr[indexMerged++] =  rightArr[iRight++];
         }
 
-        while (indexLeft < sizeArrLeft)
-            arr[indexMerged++] = leftArr[indexLeft++];
+        while (iLeft < sizeArrLeft)
+            arr[indexMerged++] = leftArr[iLeft++];
 
-        while (indexRight < sizeArrRight)
-            arr[indexMerged++] = rightArr[indexRight++];
+        while (iRight < sizeArrRight)
+            arr[indexMerged++] = rightArr[iRight++];
 
 
     }
