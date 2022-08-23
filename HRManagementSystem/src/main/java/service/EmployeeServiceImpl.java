@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public class EmployeeServiceImpl {
-    String csvFile = "data.csv";
+    private String csvFile = "data.csv";
 
     public boolean validate(EmployeeDTO dto) {
         String phoneRegex = "\\d{10}";
@@ -47,12 +47,11 @@ public class EmployeeServiceImpl {
             bw.write(dto.getEmail());
             bw.write("\n");
 
+            bw.close();
             System.out.println("Thêm thành công");
         } finally {
             if (fw != null)
                 fw.close();
-            if (bw != null)
-                bw.close();
         }
 
         Employee entity = new Employee() {
@@ -116,11 +115,11 @@ public class EmployeeServiceImpl {
             while ((lineText = lineReader.readLine()) != null) {
                 String[] data = lineText.split(",");
 
-                entity.setFirstName(data[1]);
-                if (!entity.getFirstName().equals(keyword))
-                    return null;
+                if (!data[1].equals(keyword))
+                    continue;
 
                 entity.setSsn(data[0]);
+                entity.setFirstName(data[1]);
                 entity.setLastName(data[2]);
                 entity.setBirthDate(data[3]);
                 entity.setPhone(data[4]);
@@ -129,7 +128,8 @@ public class EmployeeServiceImpl {
                 employeeList.add(entity);
             }
 
-        } catch (IOException e) {
+            if(employeeList.size() <= 0) return null;
+        }  catch (IOException e)  {
             e.printStackTrace();
         } finally {
             if (lineReader != null)

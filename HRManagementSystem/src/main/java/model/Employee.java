@@ -76,7 +76,7 @@ public abstract class Employee {
                 ", birthDate='" + birthDate + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                '}'  + "\n");
+                '}' );
     }
 
 }

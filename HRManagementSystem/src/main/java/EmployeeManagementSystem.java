@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-public class EmployeeManagement {
+public class EmployeeManagementSystem {
 
     private void menu() {
         System.out.println("===================================");
@@ -22,7 +22,7 @@ public class EmployeeManagement {
     public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
         EmployeeServiceImpl service = new EmployeeServiceImpl();
-        EmployeeManagement management = new EmployeeManagement();
+        EmployeeManagementSystem management = new EmployeeManagementSystem();
 
         management.menu();
         boolean checkExit = false;
