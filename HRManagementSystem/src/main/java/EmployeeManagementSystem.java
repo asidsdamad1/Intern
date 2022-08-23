@@ -1,5 +1,6 @@
 import dto.EmployeeDTO;
 import model.Employee;
+import service.EmployeeService;
 import service.EmployeeServiceImpl;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class EmployeeManagementSystem {
 
     public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
-        EmployeeServiceImpl service = new EmployeeServiceImpl();
+        EmployeeService service = new EmployeeServiceImpl();
         EmployeeManagementSystem management = new EmployeeManagementSystem();
 
         management.menu();
@@ -45,7 +46,7 @@ public class EmployeeManagementSystem {
                     System.out.print("Nhập ngày email: ");
                     employeeDTO.setEmail(sc.next());
 
-                    if(service.validate(employeeDTO))
+                    if(((EmployeeServiceImpl) service).validate(employeeDTO))
                         service.save(employeeDTO).display();
 
                     management.menu();

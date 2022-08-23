@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EmployeeServiceImpl {
+public class EmployeeServiceImpl implements EmployeeService{
     private String csvFile = "data.csv";
 
     public boolean validate(EmployeeDTO dto) {
@@ -31,6 +31,7 @@ public class EmployeeServiceImpl {
         return true;
     }
 
+    @Override
     public Employee save(EmployeeDTO dto) throws IOException {
         FileWriter fw = null;
         BufferedWriter bw = null;
@@ -67,7 +68,7 @@ public class EmployeeServiceImpl {
         return entity;
     }
 
-
+    @Override
     public List<Employee> getAll() throws IOException {
         List<Employee> employeeList = new ArrayList<>();
         BufferedReader lineReader = null;
@@ -102,7 +103,7 @@ public class EmployeeServiceImpl {
         return employeeList;
     }
 
-
+    @Override
     public List<Employee> searchByName(String keyword) throws IOException {
         List<Employee> employeeList = new ArrayList<>();
         BufferedReader lineReader = null;
