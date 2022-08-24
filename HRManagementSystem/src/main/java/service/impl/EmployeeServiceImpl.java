@@ -33,7 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDTO save(EmployeeDTO dto) throws IOException {
+    public Employee save(EmployeeDTO dto) throws IOException {
         FileWriter fw = null;
         BufferedWriter bw = null;
 
@@ -66,7 +66,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         entity.setPhone(dto.getPhone());
         entity.setEmail(dto.getEmail());
 
-        return new EmployeeDTO(entity);
+        return entity;
     }
 
     @Override
@@ -76,18 +76,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             lineReader = new BufferedReader(new FileReader(csvFile));
             String lineText = null;
-            Employee entity = new Employee() {
-            };
+            Employee entity = null;
 
             while ((lineText = lineReader.readLine()) != null) {
                 String[] data = lineText.split(",");
+                entity = new Employee() {};
+
                 entity.setSsn(data[0]);
                 entity.setFirstName(data[1]);
                 entity.setLastName(data[2]);
                 entity.setBirthDate(data[3]);
                 entity.setPhone(data[4]);
                 entity.setEmail(data[5]);
-
 
                 employeeList.add(entity);
             }

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface EmployeeService {
-    EmployeeDTO save(EmployeeDTO dto) throws IOException;
+    Employee save(EmployeeDTO dto) throws IOException;
 
     List<Employee> getAll() throws IOException;
 

@@ -70,14 +70,5 @@ public class EmployeeDTO {
         this.email = email;
     }
 
-    public void display() {
-        System.out.println("Employee{" +
-                "ssn='" + ssn + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", birthDate='" + birthDate + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                '}' );
-    }
+
 }

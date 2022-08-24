@@ -19,4 +19,9 @@ public class HourEmployee extends Employee{
     public void setWorkingHours(double workingHours) {
         this.workingHours = workingHours;
     }
+
+    @Override
+    public void display() {
+        
+    }
 }

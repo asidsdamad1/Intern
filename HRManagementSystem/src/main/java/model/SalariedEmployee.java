@@ -28,4 +28,9 @@ public class SalariedEmployee extends Employee{
     public void setBasicSalary(double basicSalary) {
         this.basicSalary = basicSalary;
     }
+
+    @Override
+    public void display() {
+
+    }
 }
