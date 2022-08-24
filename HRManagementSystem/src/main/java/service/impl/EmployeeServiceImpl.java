@@ -1,14 +1,15 @@
-package service;
+package service.impl;
 
 import dto.EmployeeDTO;
 import model.Employee;
+import service.EmployeeService;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class EmployeeServiceImpl implements EmployeeService{
+public class EmployeeServiceImpl implements EmployeeService {
     private String csvFile = "data.csv";
 
     public boolean validate(EmployeeDTO dto) {
@@ -32,7 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public Employee save(EmployeeDTO dto) throws IOException {
+    public EmployeeDTO save(EmployeeDTO dto) throws IOException {
         FileWriter fw = null;
         BufferedWriter bw = null;
 
@@ -65,7 +66,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         entity.setPhone(dto.getPhone());
         entity.setEmail(dto.getEmail());
 
-        return entity;
+        return new EmployeeDTO(entity);
     }
 
     @Override

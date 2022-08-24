@@ -1,5 +1,7 @@
 package dto;
 
+import model.Employee;
+
 public class EmployeeDTO {
     private String ssn;
     private String firstName;
@@ -11,13 +13,13 @@ public class EmployeeDTO {
     public EmployeeDTO() {
     }
 
-    public EmployeeDTO(String ssn, String firstName, String lastName, String birthDate, String phone, String email) {
-        this.ssn = ssn;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
-        this.phone = phone;
-        this.email = email;
+    public EmployeeDTO(Employee entity) {
+        this.ssn = entity.getSsn();
+        this.firstName = entity.getFirstName();
+        this.lastName = entity.getLastName();
+        this.birthDate = entity.getBirthDate();
+        this.phone = entity.getPhone();
+        this.email = entity.getEmail();
     }
 
     public String getSsn() {
@@ -68,5 +70,14 @@ public class EmployeeDTO {
         this.email = email;
     }
 
-
+    public void display() {
+        System.out.println("Employee{" +
+                "ssn='" + ssn + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDate='" + birthDate + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                '}' );
+    }
 }
