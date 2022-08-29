@@ -1,1 +1,1 @@
-# Intern Java core
+# Java core
