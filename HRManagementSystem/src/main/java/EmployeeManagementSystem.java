@@ -1,15 +1,13 @@
-import service.EmployeeService;
 import service.MenuService;
-import service.impl.EmployeeServiceImpl;
 import service.impl.MenuServiceImpl;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class EmployeeManagementSystem {
 
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
         MenuService menuService = new MenuServiceImpl();
 
@@ -23,6 +21,7 @@ public class EmployeeManagementSystem {
                 default -> checkExit = true;
             }
         } while (!checkExit);
+
 
     }
 }

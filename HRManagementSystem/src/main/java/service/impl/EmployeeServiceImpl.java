@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public class EmployeeServiceImpl implements EmployeeService {
-    private String csvFile = "data.csv";
+    private final String csvFile = "data.csv";
 
     public boolean validate(EmployeeDTO dto) {
         String phoneRegex = "\\d{10}";

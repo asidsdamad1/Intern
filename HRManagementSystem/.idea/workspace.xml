@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c12ed46f-886e-4c7a-a886-bafdc07f4732" name="Changes" comment="handle exception">
+    <list default="true" id="c12ed46f-886e-4c7a-a886-bafdc07f4732" name="Changes" comment="fix display employee">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/EmployeeManagementSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/EmployeeManagementSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/impl/EmployeeServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/impl/EmployeeServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,8 +57,8 @@
     <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.repository.indices" />
   </component>
   <component name="RunManager">
-    <configuration name="EmployeeManagement" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="EmployeeManagement" />
+    <configuration name="EmployeeManagementSystem" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="EmployeeManagementSystem" />
       <module name="HRManagementSystem" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -64,7 +66,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.EmployeeManagement" />
+        <item itemvalue="Application.EmployeeManagementSystem" />
       </list>
     </recent_temporary>
   </component>
@@ -80,6 +82,19 @@
       <workItem from="1660875582472" duration="2117000" />
       <workItem from="1660888107529" duration="14068000" />
       <workItem from="1661078186244" duration="4712000" />
+      <workItem from="1661223597965" duration="7593000" />
+      <workItem from="1661321568868" duration="6003000" />
+      <workItem from="1661442951531" duration="261000" />
+      <workItem from="1661497544842" duration="2279000" />
+      <workItem from="1661577150513" duration="1782000" />
+      <workItem from="1661585980457" duration="4391000" />
+      <workItem from="1661659919346" duration="8555000" />
+      <workItem from="1661739536289" duration="2101000" />
+      <workItem from="1661743867703" duration="4094000" />
+      <workItem from="1661754169126" duration="5286000" />
+      <workItem from="1661824545824" duration="136000" />
+      <workItem from="1661917182737" duration="3092000" />
+      <workItem from="1662386819288" duration="1971000" />
     </task>
     <task id="LOCAL-00001" summary="add service save employee">
       <created>1660896454984</created>
@@ -109,7 +124,35 @@
       <option name="project" value="LOCAL" />
       <updated>1661094454018</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fix stream closed, search by name">
+      <created>1661227284178</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1661227284178</updated>
+    </task>
+    <task id="LOCAL-00006" summary="add interface service">
+      <created>1661241514848</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1661241514848</updated>
+    </task>
+    <task id="LOCAL-00007" summary="add interface menu service">
+      <created>1661323220366</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1661323220366</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fix display employee">
+      <created>1661324560673</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1661324560673</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -133,6 +176,37 @@
     <MESSAGE value="add service search, getAll employee" />
     <MESSAGE value="add employee" />
     <MESSAGE value="handle exception" />
-    <option name="LAST_COMMIT_MESSAGE" value="handle exception" />
+    <MESSAGE value="fix stream closed, search by name" />
+    <MESSAGE value="add interface service=" />
+    <MESSAGE value="add interface service" />
+    <MESSAGE value="add interface menu service" />
+    <MESSAGE value="fix display employee" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix display employee" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$USER_HOME$/.jdks/openjdk-15.0.1/lib/src.zip!/java.base/java/lang/AbstractStringBuilder.java</url>
+          <line>225</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$USER_HOME$/.jdks/openjdk-15.0.1/lib/src.zip!/java.base/java/lang/AbstractStringBuilder.java</url>
+          <line>211</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$USER_HOME$/.jdks/openjdk-15.0.1/lib/src.zip!/java.base/java/lang/AbstractStringBuilder.java</url>
+          <line>581</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$USER_HOME$/.jdks/openjdk-15.0.1/lib/src.zip!/java.base/java/lang/AbstractStringBuilder.java</url>
+          <line>253</line>
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
