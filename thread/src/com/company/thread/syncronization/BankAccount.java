@@ -1,4 +1,4 @@
-package com.company.thread.bank;
+package com.company.thread.syncronization;
 
 public class BankAccount {
     long amount = 200000;
