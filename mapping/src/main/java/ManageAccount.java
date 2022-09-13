@@ -1,18 +1,13 @@
-import model.Account;
 import model.User;
-import net.bytebuddy.implementation.bytecode.Throw;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import service.AccountService;
 import service.impl.AccountServiceImpl;
 import utils.HibernateUtils;
 
-
-import javax.persistence.Query;
-import java.util.Iterator;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class ManageAccount {
@@ -41,23 +36,32 @@ public class ManageAccount {
         try (Session session = HibernateUtils.getSessionFactory().openSession();) {
             session.beginTransaction();
 
-//            String hql = "From User";
-            String hql = "Update User set firstName = :firstName where id = :id";
+//            String hql = "Update User set firstName = :firstName where id = :id";
+//
+//            Query query = session.createQuery(hql);
+//            query.setParameter("firstName", "Update");
+//            query.setParameter("id", 1L);
+//            query.executeUpdate();
+//
+//            hql = "From User";
+//            List<User> users = session.createQuery(hql, User.class).list();
+//            for (User user:
+//                    users) {
+//                System.out.println(user);
+//            }
+//
+            CriteriaBuilder builder = session.getCriteriaBuilder();
 
-            Query query = session.createQuery(hql);
-            query.setParameter("firstName", "Update");
-            query.setParameter("id", 1L);
-            query.executeUpdate();
+            CriteriaQuery<User> query = builder.createQuery(User.class);
+            Root<User> root = query.from(User.class);
+            query.select(root);
+            query.orderBy(builder.desc(root.get("firstName")), builder.desc(root.get("lastName")));
+            List<User> users = session.createQuery(query)
+                    .setFirstResult(2)
+                    .setMaxResults(10)
+                    .getResultList();
 
-            hql = "From User";
-            List<User> users = session.createQuery(hql, User.class).list();
-            for (User user:
-                    users) {
-                System.out.println(user);
-            }
-
-
-
+            System.out.println(users);
             session.getTransaction().commit();
         }
     }
