@@ -1,10 +1,23 @@
 package model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "age")
     private int age;
+
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     public User() {
     }
@@ -46,5 +59,24 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", account=" + account +
+                '}';
     }
 }

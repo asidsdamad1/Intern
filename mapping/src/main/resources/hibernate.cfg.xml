@@ -15,7 +15,8 @@
 
         <!--  We are going to connect user.hbm.xml which has
              the table information about student which is present in mysql -->
-        <mapping resource="user.hbm.xml" />
+        <mapping class="model.Account" />
+        <mapping class="model.User" />
 
     </session-factory>
 </hibernate-configuration>

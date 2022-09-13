@@ -22,10 +22,13 @@ class Counter implements Runnable{
     }
     @Override
     public void run() {
-        this.increment();
-        System.out.println("giá trị sau khi tăng: " + Thread.currentThread().getName() + " " + this.getCount());
-        this.decrement();
-        System.out.println("giá trị cuối cùng: " + Thread.currentThread().getName() + " " + this.getCount());
+        synchronized (this) {
+            this.increment();
+            System.out.println("giá trị sau khi tăng: " + Thread.currentThread().getName() + " " + this.getCount());
+            this.decrement();
+            System.out.println("giá trị cuối cùng: " + Thread.currentThread().getName() + " " + this.getCount());
+        }
+
 
     }
 }
