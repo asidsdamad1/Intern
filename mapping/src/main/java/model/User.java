@@ -1,5 +1,7 @@
 package model;
 
+import jakarta.validation.constraints.Min;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,6 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "first_name")
+    @Min(value = 4, message = "first name not be less 4")
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
