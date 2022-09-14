@@ -79,7 +79,7 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
-                ", account=" + account +
+
                 '}';
     }
 }

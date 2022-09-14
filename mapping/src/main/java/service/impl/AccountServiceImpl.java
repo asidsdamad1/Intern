@@ -15,13 +15,12 @@ public class AccountServiceImpl implements AccountService {
     public Account addAcount(String name, double amount) {
         try (Session session = HibernateUtils.getSessionFactory().openSession();) {
             Transaction tx = null;
-            Long accountId = null;
             Account account = null;
 
             try {
                 tx = session.beginTransaction();
                 account = new Account(name, amount);
-                accountId = (Long) session.save(account);
+                session.save(account);
                 tx.commit();
             } catch (HibernateException e) {
                 if (tx != null)
