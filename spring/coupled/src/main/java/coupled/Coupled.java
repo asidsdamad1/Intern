@@ -1,3 +1,4 @@
+package coupled;
 
 interface IExport {
     void export(Object  data);
@@ -20,7 +21,7 @@ class ExportJSON implements IExport {
 
 class ExportData {
     private IExport iExport;
-//    private ExportCSV exportCSV = new ExportCSV();
+//    private coupled.ExportCSV exportCSV = new coupled.ExportCSV();
 
     public ExportData() {
         iExport = new ExportCSV();
@@ -38,7 +39,7 @@ class ExportData {
 public class Coupled {
 
     public static void main(String[] args) {
-//        ExportData exportData = new ExportData();
+//        coupled.ExportData exportData = new coupled.ExportData();
 //        exportData.exportProcess("Data");
 
         IExport csvFormat = new ExportCSV();
