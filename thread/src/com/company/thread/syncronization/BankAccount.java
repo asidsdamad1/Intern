@@ -51,7 +51,7 @@ public class BankAccount {
 
         while (!checkAccountBalance(withdrawAmount)) {
             // nếu ko đủ tiền, thì đợi đến khi có thì rút
-            System.out.println(threadName + " chờ cho đủ tiền");
+            System.out.println(threadName + " chờ nạp đủ tiền");
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -60,7 +60,7 @@ public class BankAccount {
         }
 
         //đủ tiền, hoặc ko còn đợi nữa thì dc phép rút
-        // giả lập tg út và cập nhật tiền
+
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -83,7 +83,7 @@ public class BankAccount {
 
         amount += depositAmount;
 
-        //đánh thức đối tượng đang ngủ và chờ có tiền thì rút
+
         notifyAll();
     }
 

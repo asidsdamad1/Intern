@@ -1,11 +1,16 @@
 package model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "accounts")
-public class Account {
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long accountId;

@@ -6,4 +6,7 @@ public interface AccountService {
     Account addAcount(String name, double amount);
     void listAccounts();
     Account updateAccount(Long id, double amount);
+    Account getById(Long id);
+
+    void statistics();
 }
