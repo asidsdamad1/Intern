@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/category")
 public class RestCategoryController {
@@ -35,6 +37,12 @@ public class RestCategoryController {
     public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
         Boolean result = service.deleteById(id);
         return new ResponseEntity<Boolean>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = "/getAll", method = RequestMethod.GET)
+    public ResponseEntity<List<CategoryDto>> getAll() {
+        List<CategoryDto> result = service.getAll();
+        return new ResponseEntity<List<CategoryDto>>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
 }

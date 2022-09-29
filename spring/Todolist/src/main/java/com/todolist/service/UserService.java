@@ -1,14 +1,23 @@
 package com.todolist.service;
 
+import com.todolist.domain.Role;
+import com.todolist.domain.User;
 import com.todolist.dto.UserDto;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 public interface UserService {
-    UserDto saveOrUpdate(UserDto dto, Long id);
+    UserDto saveUser(UserDto userDto);
 
-    UserDto getById(Long id);
+    Role saveRole(Role role);
 
-    UserDto searchByDto(UserDto dto);
+    UserDto deleteById(Long userId);
 
-    Boolean deleteById(Long id);
+    UserDto getCurrentUser();
+
+    User getUserByUsername(String username);
+
+    void addRoleToUser(String username, String roleName);
+
+    List<UserDto> getUsers();
 }

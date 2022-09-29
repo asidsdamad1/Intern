@@ -2,7 +2,7 @@ package com.todolist.dto;
 
 import java.util.Date;
 
-public class BaseDto {
+public abstract class BaseDto {
     protected Long id;
     protected Date createDate;
 

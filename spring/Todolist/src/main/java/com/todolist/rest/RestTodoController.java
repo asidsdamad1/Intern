@@ -1,8 +1,6 @@
 package com.todolist.rest;
 
 import com.todolist.dto.TodoDto;
-import com.todolist.model.Todo;
-import com.todolist.service.CategoryService;
 import com.todolist.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,5 +37,11 @@ public class RestTodoController {
     public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
         Boolean result = service.deleteById(id);
         return new ResponseEntity<Boolean>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = "/getAll", method = RequestMethod.GET)
+    public ResponseEntity<List<TodoDto>> getAll() {
+        List<TodoDto> result = service.getAll();
+        return new ResponseEntity<List<TodoDto>>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 }

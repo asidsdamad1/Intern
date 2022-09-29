@@ -2,9 +2,9 @@ package com.todolist.service.impl;
 
 import com.todolist.dto.CategoryDto;
 import com.todolist.dto.TodoDto;
-import com.todolist.model.Category;
-import com.todolist.model.Todo;
-import com.todolist.model.User;
+import com.todolist.domain.Category;
+import com.todolist.domain.Todo;
+import com.todolist.domain.User;
 import com.todolist.repository.CategoryRepository;
 import com.todolist.repository.TodoRepository;
 import com.todolist.repository.UserRepository;
@@ -92,6 +92,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> searchByDto(CategoryDto dto) {
+        if(dto != null) {
+
+        }
         return null;
     }
 
@@ -102,5 +105,18 @@ public class CategoryServiceImpl implements CategoryService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<CategoryDto>  getAll() {
+        List<Category> categories = categoryRepository.getAll();
+        List<CategoryDto> dtoList = new ArrayList<>();
+        for(Category category : categories) {
+            System.out.println(category);
+            System.out.println(category.getName() + " has " + category.getTodos().size() + " todo.");
+            dtoList.add(new CategoryDto(category));
+
+        }
+        return dtoList;
     }
 }

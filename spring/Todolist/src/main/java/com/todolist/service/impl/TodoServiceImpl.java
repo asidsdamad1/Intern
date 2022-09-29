@@ -1,9 +1,9 @@
 package com.todolist.service.impl;
 
-import com.todolist.dto.CategoryDto;
 import com.todolist.dto.TodoDto;
-import com.todolist.model.Category;
-import com.todolist.model.Todo;
+import com.todolist.exception.ApiResquestException;
+import com.todolist.domain.Category;
+import com.todolist.domain.Todo;
 import com.todolist.repository.CategoryRepository;
 import com.todolist.repository.TodoRepository;
 import com.todolist.service.TodoService;
@@ -84,14 +84,15 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoDto getById(Long id) {
         if(id != null) {
-            Todo entity = todoRepository.getReferenceById(id);
-            return new TodoDto(entity);
+            Todo entity = todoRepository.getById(id);
+            if(entity != null)
+                return new TodoDto(entity);
         }
-        return null;
+        throw new ApiResquestException("Oops cannot get all todos with customer exception");
     }
 
     @Override
-    public TodoDto searchByDto(TodoDto dto) {
+    public List<TodoDto> searchByDto(TodoDto dto) {
         return null;
     }
 
@@ -102,5 +103,19 @@ public class TodoServiceImpl implements TodoService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<TodoDto> getAll() {
+        List<Todo> todos = todoRepository.getAll();
+        List<TodoDto> dtoList = new ArrayList<>();
+        for(Todo todo : todos) {
+            System.out.println(todo);
+            System.out.println(todo.getTitle() + " has " + todo.getTodoItems().size() + " todoItems.");
+            dtoList.add(new TodoDto(todo));
+
+        }
+        return dtoList;
+
     }
 }

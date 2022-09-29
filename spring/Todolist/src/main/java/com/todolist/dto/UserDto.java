@@ -1,7 +1,7 @@
 package com.todolist.dto;
 
-import com.todolist.model.Category;
-import com.todolist.model.User;
+import com.todolist.domain.Category;
+import com.todolist.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
