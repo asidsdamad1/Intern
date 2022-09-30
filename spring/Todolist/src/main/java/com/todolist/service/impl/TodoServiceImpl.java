@@ -1,9 +1,10 @@
 package com.todolist.service.impl;
 
-import com.todolist.dto.TodoDto;
-import com.todolist.exception.ApiResquestException;
 import com.todolist.domain.Category;
 import com.todolist.domain.Todo;
+import com.todolist.dto.TodoDto;
+import com.todolist.dto.UserDto;
+import com.todolist.exception.ApiResquestException;
 import com.todolist.repository.CategoryRepository;
 import com.todolist.repository.TodoRepository;
 import com.todolist.service.TodoService;
@@ -22,10 +23,10 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoDto saveOrUpdate(TodoDto dto, Long id) {
-        if(dto != null) {
+        if (dto != null) {
             Todo entity = null;
 
-            if(id != null) {
+            if (id != null) {
                 entity = todoRepository.getReferenceById(id);
             } else {
                 entity = new Todo();
@@ -35,27 +36,27 @@ public class TodoServiceImpl implements TodoService {
             entity.setNotes(dto.getNotes());
             entity.setDone(dto.isDone());
 
-            if(dto.getCategory() != null  && dto.getCategory().getId() != null) {
+            if (dto.getCategory() != null && dto.getCategory().getId() != null) {
                 Category category = categoryRepository.getReferenceById(dto.getCategory().getId());
-                if(category != null)
+                if (category != null)
                     entity.setCategory(category);
             } else {
                 entity.setCategory(null);
             }
 
-            if(dto.getParent() != null && dto.getParent().getId() != null) {
+            if (dto.getParent() != null && dto.getParent().getId() != null) {
                 Todo parent = todoRepository.getReferenceById(dto.getParent().getId());
-                if(parent != null)
+                if (parent != null)
                     entity.setParent(parent);
             } else {
                 entity.setParent(null);
             }
 
             List<Todo> todoItems = new ArrayList<>();
-            if(dto.getTodoItems() != null && dto.getTodoItems().size() > 0) {
-                for(TodoDto itemDto : dto.getTodoItems()) {
+            if (dto.getTodoItems() != null && dto.getTodoItems().size() > 0) {
+                for (TodoDto itemDto : dto.getTodoItems()) {
                     Todo item = null;
-                    if(itemDto.getId() != null) {
+                    if (itemDto.getId() != null) {
                         item = todoRepository.getReferenceById(itemDto.getId());
                     } else {
                         item = new Todo();
@@ -65,7 +66,7 @@ public class TodoServiceImpl implements TodoService {
                 }
             }
 
-            if(entity.getTodoItems() == null) {
+            if (entity.getTodoItems() == null) {
                 entity.setTodoItems(todoItems);
             } else {
                 entity.getTodoItems().clear();
@@ -74,7 +75,7 @@ public class TodoServiceImpl implements TodoService {
 
             entity = todoRepository.save(entity);
 
-            if(entity != null) {
+            if (entity != null) {
                 return new TodoDto(entity);
             }
         }
@@ -83,9 +84,9 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoDto getById(Long id) {
-        if(id != null) {
+        if (id != null) {
             Todo entity = todoRepository.getById(id);
-            if(entity != null)
+            if (entity != null)
                 return new TodoDto(entity);
         }
         throw new ApiResquestException("Oops cannot get all todos with customer exception");
@@ -98,7 +99,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public Boolean deleteById(Long id) {
-        if(id != null) {
+        if (id != null) {
             todoRepository.deleteById(id);
             return true;
         }
@@ -106,14 +107,11 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public List<TodoDto> getAll() {
-        List<Todo> todos = todoRepository.getAll();
+    public List<TodoDto> getAll(UserDto userDto) {
+        List<Todo> todos = todoRepository.getByUserId(userDto.getId());
         List<TodoDto> dtoList = new ArrayList<>();
-        for(Todo todo : todos) {
-            System.out.println(todo);
-            System.out.println(todo.getTitle() + " has " + todo.getTodoItems().size() + " todoItems.");
+        for (Todo todo : todos) {
             dtoList.add(new TodoDto(todo));
-
         }
         return dtoList;
 

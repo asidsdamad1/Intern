@@ -20,6 +20,7 @@ public class RestUserController {
     @Autowired
     private UserService userService;
 
+
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     private ResponseEntity<List<UserDto>> getAll() {
         return ResponseEntity.ok().body(userService.getUsers());

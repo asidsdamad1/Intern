@@ -2,6 +2,7 @@ package com.todolist.rest;
 
 import com.todolist.dto.CategoryDto;
 import com.todolist.service.CategoryService;
+import com.todolist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import java.util.List;
 public class RestCategoryController {
     @Autowired
     CategoryService service;
+    @Autowired
+    UserService userService;
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CategoryDto> save(@RequestBody CategoryDto dto) {
@@ -41,7 +44,7 @@ public class RestCategoryController {
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseEntity<List<CategoryDto>> getAll() {
-        List<CategoryDto> result = service.getAll();
+        List<CategoryDto> result = service.getByUser(userService.getCurrentUser());
         return new ResponseEntity<List<CategoryDto>>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 

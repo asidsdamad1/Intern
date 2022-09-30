@@ -7,7 +7,9 @@ import com.todolist.repository.RoleRepository;
 import com.todolist.repository.UserRepository;
 import com.todolist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -78,6 +80,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDto getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        String userName = null;
+        if (principal instanceof UserDetails) {
+            UserDetails userDetail = (UserDetails)principal;
+            userName = userDetail.getUsername();
+        } else {
+            userName = principal.toString();
+        }
+
+        if (userName != null) {
+            User entity = this.userRepo.findByUsername(userName);
+            if (entity != null) {
+                return new UserDto(entity);
+            }
+        }
+
         return null;
     }
 

@@ -5,11 +5,15 @@ import com.todolist.dto.TodoDto;
 import com.todolist.domain.Category;
 import com.todolist.domain.Todo;
 import com.todolist.domain.User;
+import com.todolist.dto.UserDto;
 import com.todolist.repository.CategoryRepository;
 import com.todolist.repository.TodoRepository;
 import com.todolist.repository.UserRepository;
 import com.todolist.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -108,13 +112,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto>  getAll() {
-        List<Category> categories = categoryRepository.getAll();
+    public List<CategoryDto>  getByUser(UserDto userDto) {
+
+        List<Category> categories = categoryRepository.getByUserId(userDto.getId());
         List<CategoryDto> dtoList = new ArrayList<>();
         for(Category category : categories) {
-            System.out.println(category);
-            System.out.println(category.getName() + " has " + category.getTodos().size() + " todo.");
-            dtoList.add(new CategoryDto(category));
+            dtoList.add(new CategoryDto(category, false));
 
         }
         return dtoList;

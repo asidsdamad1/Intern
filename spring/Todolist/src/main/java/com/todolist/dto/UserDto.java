@@ -11,22 +11,26 @@ public class UserDto extends BaseDto{
     private String password;
     private List<CategoryDto> categories;
 
-    public UserDto() {
+    public UserDto(User entity) {
+        this(entity, true);
     }
 
-    public UserDto(User entity) {
+    public UserDto(User entity, boolean simple) {
         if(entity != null) {
             this.id = entity.getId();
             this.createDate = entity.getCreatedAt();
             this.username = entity.getUsername();
             this.password = entity.getPassword();
 
-            if(entity.getCategories() != null && entity.getCategories().size() > 0 ) {
-                this.categories = new ArrayList<>();
-                for(Category category : entity.getCategories()) {
-                    this.categories.add(new CategoryDto(category));
+            if(simple) {
+                if(entity.getCategories() != null && entity.getCategories().size() > 0 ) {
+                    this.categories = new ArrayList<>();
+                    for(Category category : entity.getCategories()) {
+                        this.categories.add(new CategoryDto(category));
+                    }
                 }
             }
+
         }
     }
     public String getUsername() {

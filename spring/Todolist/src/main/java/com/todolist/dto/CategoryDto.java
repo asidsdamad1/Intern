@@ -19,6 +19,7 @@ public class CategoryDto extends BaseDto{
         this(entity, true);
     }
 
+
     public CategoryDto(Category entity,  boolean simple) {
         if(entity != null)  {
             this.id  = entity.getId();
@@ -26,7 +27,7 @@ public class CategoryDto extends BaseDto{
             this.name = entity.getName();
             this.description  = entity.getDescription();
             if(entity.getUser() != null)
-                this.user = new UserDto(entity.getUser());
+                this.user = new UserDto(entity.getUser(), false);
 
             if(simple) {
                 if(entity.getTodos() != null && entity.getTodos().size() > 0) {

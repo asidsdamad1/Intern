@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    @Query("select distinct e from Category e join fetch e.todos")
-    List<Category> getAll();
+    @Query("select e from Category e where e.user.id=?1")
+    List<Category> getByUserId(long userId);
 }
