@@ -1,44 +1,56 @@
 package com.todolist.security.jwt;
 
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.crypto.SecretKey;
 
 @Configuration
+@ConfigurationProperties(prefix = "application.jwt")
 public class JWTConfig {
-    @Autowired
-    private JWTProperties jwtProperties;
 
-    public JWTConfig(JWTProperties jwtProperties) {
-        this.jwtProperties = jwtProperties;
+    private String secretKey;
+    private String tokenPrefix;
+    private int expirationDateInMs;
+    private int refreshExpirationDateInMs;
+
+    public JWTConfig() {
     }
 
-    @Bean
-    @Qualifier("secretKey")
-    public SecretKey getSecretKey()  {
-        return Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes());
+    public String getStringSecretKey() {
+        return secretKey;
     }
 
-    @Bean
-    @Qualifier("expireDate")
-    public int getExpireDate()  {
-        return jwtProperties.getExpirationDateInMs();
+    public SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    @Bean
-    @Qualifier("refreshExpireDate")
-    public int getRefreshExpireDate()  {
-        return jwtProperties.getRefreshExpirationDateInMs();
+    public String getTokenPrefix() {
+        return tokenPrefix;
     }
 
-    @Bean
-    @Qualifier("tokenPrefix")
-    public String getTokenPrefix()  {
-        return jwtProperties.getTokenPrefix();
+    public int getExpirationDateInMs() {
+        return expirationDateInMs;
     }
 
+    public int getRefreshExpirationDateInMs() {
+        return refreshExpirationDateInMs;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public void setTokenPrefix(String tokenPrefix) {
+        this.tokenPrefix = tokenPrefix;
+    }
+
+    public void setExpirationDateInMs(int expirationDateInMs) {
+        this.expirationDateInMs = expirationDateInMs;
+    }
+
+    public void setRefreshExpirationDateInMs(int refreshExpirationDateInMs) {
+        this.refreshExpirationDateInMs = refreshExpirationDateInMs;
+    }
 }

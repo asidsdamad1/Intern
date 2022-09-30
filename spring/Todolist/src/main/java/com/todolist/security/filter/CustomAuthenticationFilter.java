@@ -3,7 +3,7 @@ package com.todolist.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.todolist.security.jwt.JWTProperties;
+import com.todolist.security.jwt.JWTConfig;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +31,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private JWTProperties jwtProperties;
+    private JWTConfig jwtConfig;
 
 
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -57,25 +57,25 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                                             FilterChain chain,
                                             Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();
-        Algorithm algorithm = Algorithm.HMAC256(jwtProperties.getSecretKey().getBytes());
+        Algorithm algorithm = Algorithm.HMAC256(jwtConfig.getStringSecretKey().getBytes());
         String access_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() * jwtProperties.getExpirationDateInMs()))
+                .withExpiresAt(new Date(System.currentTimeMillis() * jwtConfig.getExpirationDateInMs()))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
 
         String refresh_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() * jwtProperties.getRefreshExpirationDateInMs()))
+                .withExpiresAt(new Date(System.currentTimeMillis() * jwtConfig.getRefreshExpirationDateInMs()))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);
-        tokens.put("expired", String.valueOf(jwtProperties.getExpirationDateInMs()));
-        tokens.put("refresh_expired", String.valueOf(jwtProperties.getRefreshExpirationDateInMs()));
+        tokens.put("expired", String.valueOf(jwtConfig.getExpirationDateInMs()));
+        tokens.put("refresh_expired", String.valueOf(jwtConfig.getRefreshExpirationDateInMs()));
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }

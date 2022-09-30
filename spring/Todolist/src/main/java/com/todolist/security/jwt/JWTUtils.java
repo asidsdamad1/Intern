@@ -2,49 +2,35 @@ package com.todolist.security.jwt;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
 import java.util.*;
 import java.util.function.Function;
 
 @Service
 public class JWTUtils {
-    @Autowired
-    @Qualifier("secretKey")
-    private SecretKey secretKey;
 
     @Autowired
-    @Qualifier("expireDate")
-    private int jwtExpirationInMs;
-
-    @Autowired
-    @Qualifier("refreshExpireDate")
-    private int refreshExpirationDateInMs;
-
-    @Autowired
-    @Qualifier("tokenPrefix")
-    private String tokenPrefix;
+    private JWTConfig jwtConfig;
 
     public JWTUtils() {
 
     }
 
-    public JWTUtils(@Qualifier("secretKey") SecretKey secretKey) {
-        this.secretKey = secretKey;
-    }
-
     public int getJwtExpirationInMs() {
-        return jwtExpirationInMs;
+        return jwtConfig.getExpirationDateInMs();
     }
 
     public int getRefreshExpirationDateInMs() {
-        return refreshExpirationDateInMs;
+        return jwtConfig.getRefreshExpirationDateInMs();
+    }
+
+    public String getTokenPrefix() {
+        return jwtConfig.getTokenPrefix();
     }
 
     public String extractUsername(String token) {
@@ -61,7 +47,7 @@ public class JWTUtils {
     }
 
     public Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(jwtConfig.getSecretKey()).build().parseClaimsJws(token).getBody();
     }
 
     public Boolean isTokenExpired(String token) {
@@ -69,13 +55,13 @@ public class JWTUtils {
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parserBuilder().setSigningKey(jwtConfig.getSecretKey()).build().parseClaimsJws(token).getBody();
         return claims.getSubject();
 
     }
 
     public List<SimpleGrantedAuthority> getRolesFromToken(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parserBuilder().setSigningKey(jwtConfig.getSecretKey()).build().parseClaimsJws(token).getBody();
 
         List<SimpleGrantedAuthority> roles = null;
 
@@ -112,27 +98,27 @@ public class JWTUtils {
     private String doGenerateToken(Map<String, Object> claims, String subject) {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
-                .signWith(SignatureAlgorithm.HS512, secretKey).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpirationDateInMs()))
+                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecretKey()).compact();
 
     }
 
     public String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
-                .signWith(SignatureAlgorithm.HS256, secretKey).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpirationDateInMs()))
+                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecretKey()).compact();
     }
 
     public String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationDateInMs))
-                .signWith(SignatureAlgorithm.HS512, secretKey).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getRefreshExpirationDateInMs()))
+                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecretKey()).compact();
 
     }
 
     public boolean validateToken(String authToken) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(authToken);
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(jwtConfig.getSecretKey()).build().parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
             throw new BadCredentialsException("INVALID_CREDENTIALS", ex);
