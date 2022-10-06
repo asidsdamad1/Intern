@@ -1,7 +1,7 @@
 package com.todolist.security.jwt;
 
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,14 +12,9 @@ import java.util.*;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JWTUtils {
-
-    @Autowired
-    private JWTConfig jwtConfig;
-
-    public JWTUtils() {
-
-    }
+    private final JWTConfig jwtConfig;
 
     public int getJwtExpirationInMs() {
         return jwtConfig.getExpirationDateInMs();
@@ -99,26 +94,32 @@ public class JWTUtils {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpirationDateInMs()))
-                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecretKey()).compact();
+                .signWith(jwtConfig.getSecretKey(), SignatureAlgorithm.HS512).compact();
 
     }
 
     public String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpirationDateInMs()))
-                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecretKey()).compact();
+                .signWith(jwtConfig.getSecretKey(), SignatureAlgorithm.HS256).compact();
     }
 
     public String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getRefreshExpirationDateInMs()))
-                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecretKey()).compact();
+                .signWith(jwtConfig.getSecretKey(),  SignatureAlgorithm.HS512).compact();
 
     }
 
     public boolean validateToken(String authToken) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(jwtConfig.getSecretKey()).build().parseClaimsJws(authToken);
+            Jwts.parserBuilder().setSigningKey(jwtConfig.getSecretKey()).build().parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
             throw new BadCredentialsException("INVALID_CREDENTIALS", ex);

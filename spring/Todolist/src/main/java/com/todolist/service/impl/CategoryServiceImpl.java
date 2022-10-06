@@ -1,110 +1,81 @@
 package com.todolist.service.impl;
 
-import com.todolist.dto.CategoryDto;
-import com.todolist.dto.TodoDto;
 import com.todolist.domain.Category;
 import com.todolist.domain.Todo;
-import com.todolist.domain.User;
-import com.todolist.dto.UserDto;
+import com.todolist.dto.request.CategoryRequestDto;
+import com.todolist.dto.request.UserRequestDto;
+import com.todolist.dto.response.CategoryResponseDto;
+import com.todolist.dto.response.UserResponseDto;
+import com.todolist.exception.request.BadRequestException;
+import com.todolist.exception.request.NotFoundException;
 import com.todolist.repository.CategoryRepository;
 import com.todolist.repository.TodoRepository;
-import com.todolist.repository.UserRepository;
 import com.todolist.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.todolist.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    @Autowired
-    CategoryRepository categoryRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    TodoRepository todoRepository;
+    private final CategoryRepository categoryRepository;
+    private final TodoRepository todoRepository;
+    private final UserService userService;
 
     @Override
-    public CategoryDto saveOrUpdate(CategoryDto dto, Long id) {
-        if(dto != null) {
-            Category entity = null;
-
-            if(id != null)
-                entity = categoryRepository.getReferenceById(id);
-            else
-                entity = new Category();
-
-            entity.setName(dto.getName());
-            entity.setDescription(dto.getDescription());
-
-            if(dto.getUser() != null && dto.getUser().getId() > 0) {
-                User user = userRepository.getReferenceById(entity.getUser().getId());
-                if(user != null)
-                    entity.setUser(user);
-            } else {
-                entity.setUser(null);
-            }
-
-            List<Todo> todos = new ArrayList<>();
-            if(dto.getTodos() != null && dto.getTodos().size() > 0) {
-                for(TodoDto todoDto : dto.getTodos()) {
-                    Todo item = null;
-                    if(todoDto.getId() != null) {
-                        item = todoRepository.getReferenceById(todoDto.getId());
-                    } else {
-                        item = new Todo();
-                    }
-
-                    Todo parent = null;
-                    if(todoDto.getParent() != null && todoDto.getParent().getId() != null) {
-                        parent = todoRepository.getReferenceById(todoDto.getParent().getId());
-                    }
-
-                    item.setParent(parent);
-                    todos.add(item);
-                }
-            }
-
-            if(entity.getTodos() == null) {
-                entity.setTodos(todos);
-            } else {
-                entity.getTodos().clear();
-                entity.getTodos().addAll(todos);
-            }
-
-            entity = categoryRepository.save(entity);
-
-            if(entity != null) {
-                return new CategoryDto(entity);
-            }
+    public CategoryResponseDto save(CategoryRequestDto dto) {
+        if (dto != null) {
+            Category category = Category.builder()
+                    .name(dto.getName())
+                    .description(dto.getDescription())
+                    .user(UserResponseDto.toEntity(userService.getCurrentUser()))
+                    .build();
+            return CategoryResponseDto.toDto(categoryRepository.save(category));
         }
         return null;
     }
 
     @Override
-    public CategoryDto getById(Long id) {
-        if(id != null) {
-            Category entity = categoryRepository.getReferenceById(id);
-            return new CategoryDto(entity);
+    public CategoryResponseDto update(CategoryRequestDto dto, Long id) {
+        if (id == null) {
+            throw new BadRequestException("Category Id is null");
+        }
+
+        CategoryResponseDto categoryResponseDto = getById(id);
+
+        if (dto != null) {
+            List<Todo> todos = todoRepository.getByCategoryId(id);
+
+            Category category = Category.builder()
+                    .name(dto.getName())
+                    .description(dto.getDescription())
+                    .user(UserRequestDto.toEntity(dto.getUser()))
+                    .todos(todos)
+                    .build();
+            category.setId(categoryResponseDto.getId());
+
+            return CategoryResponseDto.toDto(categoryRepository.save(category));
         }
         return null;
     }
 
     @Override
-    public List<CategoryDto> searchByDto(CategoryDto dto) {
-        if(dto != null) {
-
-        }
-        return null;
+    public CategoryResponseDto getById(Long id) {
+        return categoryRepository.findById(id)
+                .map(CategoryResponseDto::of)
+                .orElseThrow(() ->
+                {
+                    throw new NotFoundException("category id not found");
+                });
     }
 
     @Override
     public Boolean deleteById(Long id) {
-        if(id != null) {
+        if (id != null) {
             categoryRepository.deleteById(id);
             return true;
         }
@@ -112,14 +83,26 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto>  getByUser(UserDto userDto) {
+    public Page<CategoryResponseDto> getAll(int page, int size, String[] sorts, UserResponseDto userRequestDto) {
+        List<Sort.Order> orders = new ArrayList<>();
 
-        List<Category> categories = categoryRepository.getByUserId(userDto.getId());
-        List<CategoryDto> dtoList = new ArrayList<>();
-        for(Category category : categories) {
-            dtoList.add(new CategoryDto(category, false));
-
+        if (sorts[0].contains(",")) {
+            //sort more than 2 fields, sortOrder="field, direction"
+            for (String sortOrder : sorts) {
+                String[] sort = sortOrder.split(",");
+                orders.add(new Sort.Order(Sort.Direction.valueOf(sort[1]), sort[0]));
+            }
+        } else {
+            orders.add(new Sort.Order(Sort.Direction.valueOf(sorts[1]), sorts[0]));
         }
-        return dtoList;
+        Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
+        Page<Category> pageCategory = categoryRepository.findAll(userRequestDto.getId(), pagingSort);
+
+        List<CategoryResponseDto> todoResponses = new ArrayList<>();
+        for (Category todo : pageCategory.getContent()) {
+            todoResponses.add(CategoryResponseDto.toDto(todo));
+        }
+
+        return new PageImpl<>(todoResponses);
     }
 }

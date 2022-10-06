@@ -21,4 +21,26 @@ class TodolistApplicationTests {
         assertThat(categoryController).isNotNull();
     }
 
+//    @Bean
+//    CommandLineRunner run(UserService userService) {
+//        return args -> {
+//            userService.saveRole(Role.builder()
+//                                    .name("ROLE_USER")
+//                                    .build());
+//            userService.saveRole(Role.builder()
+//                                    .name("ROLE_ADMIN")
+//                                    .build());
+//
+//            User user1 = User.builder()
+//                    .username("admin")
+//                    .password("1234")
+//                    .build();
+//            User user2 = User.builder()
+//                    .username("user1")
+//                    .password("1234")
+//                    .build();
+//            userService.saveUser(new UserRequestDto(user1));
+//            userService.saveUser(new UserRequestDto(user2));
+//        };
+//    }
 }

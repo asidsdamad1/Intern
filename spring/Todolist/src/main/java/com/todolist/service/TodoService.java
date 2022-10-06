@@ -1,18 +1,19 @@
 package com.todolist.service;
 
-import com.todolist.dto.TodoDto;
-import com.todolist.dto.UserDto;
-
-import java.util.List;
+import com.todolist.dto.request.TodoRequestDto;
+import com.todolist.dto.request.UserRequestDto;
+import com.todolist.dto.response.TodoResponseDto;
+import com.todolist.dto.response.UserResponseDto;
+import org.springframework.data.domain.Page;
 
 public interface TodoService {
-    TodoDto saveOrUpdate(TodoDto dto, Long id);
+    TodoResponseDto save(TodoRequestDto todoRequestDto);
 
-    TodoDto getById(Long id);
+    TodoResponseDto update(TodoRequestDto todoRequestDto, Long id);
 
-    List<TodoDto> getAll(UserDto  userDto);
+    TodoResponseDto getById(Long id);
 
-    List<TodoDto> searchByDto(TodoDto dto);
+    Page<TodoResponseDto> getAll(int page, int size, String[] sorts, UserResponseDto userResponseDto);
 
     Boolean deleteById(Long id);
 }

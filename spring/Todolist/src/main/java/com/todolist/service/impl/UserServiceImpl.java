@@ -1,70 +1,108 @@
 package com.todolist.service.impl;
 
+import com.todolist.domain.Category;
 import com.todolist.domain.Role;
 import com.todolist.domain.User;
-import com.todolist.dto.UserDto;
+import com.todolist.dto.request.UserRequestDto;
+import com.todolist.dto.response.UserResponseDto;
+import com.todolist.exception.request.BadRequestException;
+import com.todolist.repository.CategoryRepository;
 import com.todolist.repository.RoleRepository;
 import com.todolist.repository.UserRepository;
 import com.todolist.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
-    @Autowired
-    private UserRepository userRepo;
-    @Autowired
-    private RoleRepository roleRepo;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepo;
+    private final RoleRepository roleRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final CategoryRepository categoryRepository;
+
+    public UserResponseDto getById(Long id) {
+        return userRepo.findById(id)
+                .map(UserResponseDto::of)
+                .orElseThrow(() -> {
+                    throw new BadRequestException("UserId can not be found");
+                });
+    }
+
+    public UserResponseDto getByUserName(String username) {
+        return userRepo.findByUsername(username)
+                .map(UserResponseDto::of)
+                .orElseThrow(() -> {
+                    throw new BadRequestException("Username can not be found");
+                });
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username);
+        User user = userRepo.getByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found in the database");
         }
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        user.getRole().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        });
+        user.getRole().forEach(
+                role -> authorities.add(new SimpleGrantedAuthority(role.getName()))
+        );
+
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
     @Override
-    public UserDto saveUser(UserDto dto) {
+    public com.todolist.dto.response.UserResponseDto saveUser(UserRequestDto dto) {
         if (dto == null) {
             return null;
         }
-        User user = new User();
-
         Role role = roleRepo.findByName("ROLE_USER");
 
-        Set<Role> roles = new HashSet();
+        Set<Role> roles = new HashSet<>();
         roles.add(role);
 
-        user.setRole(roles);
-        user.setUsername(dto.getUsername());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        User user = User.builder()
+                .username(dto.getUsername())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .role(roles)
+                .build();
 
-        user = userRepo.save(user);
+        return com.todolist.dto.response.UserResponseDto.toDto(userRepo.save(user));
+    }
 
-        if (user != null) {
-            return new UserDto(user);
+    @Override
+    public UserResponseDto updateUser(UserRequestDto dto, Long id) {
+        if (id == null) {
+            throw new BadRequestException("User Id is null");
         }
+        UserResponseDto responseDto = getById(id);
 
+        if (dto != null) {
+            List<Category> categories = categoryRepository.getByUserId(id);
+            User user = User.builder()
+                    .username(dto.getUsername())
+                    .password(passwordEncoder.encode(dto.getPassword()))
+                    .categories(categories)
+                    .build();
+            user.setId(responseDto.getId());
+
+            return UserResponseDto.toDto(userRepo.save(user));
+        }
         return null;
     }
 
@@ -74,27 +112,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDto deleteById(Long userId) {
-        return null;
+    public Boolean deleteUser(Long id) {
+        if (id == null) {
+            throw new BadRequestException("User Id is null");
+        }
+        // throw EntityNotfoundNotFound
+        UserResponseDto responseDto = getById(id);
+        if (responseDto != null) {
+            userRepo.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public UserDto getCurrentUser() {
+    public UserResponseDto getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        String userName = null;
+        String userName;
         if (principal instanceof UserDetails) {
-            UserDetails userDetail = (UserDetails)principal;
+            UserDetails userDetail = (UserDetails) principal;
             userName = userDetail.getUsername();
         } else {
             userName = principal.toString();
         }
 
         if (userName != null) {
-            User entity = this.userRepo.findByUsername(userName);
-            if (entity != null) {
-                return new UserDto(entity);
-            }
+            return getByUserName(userName);
         }
 
         return null;
@@ -102,24 +146,40 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void addRoleToUser(String username, String roleName) {
-        User user = userRepo.findByUsername(username);
+        UserResponseDto userDto = (UserResponseDto) getUserByUsername(username);
+        User user = UserResponseDto.toEntity(userDto);
+
         Role role = roleRepo.findByName(roleName);
         user.getRole().add(role);
     }
 
     @Override
-    public User getUserByUsername(String username) {
-        return userRepo.findByUsername(username);
+    public UserDetails getUserByUsername(String username) {
+        return userRepo.getByUsername(username);
     }
 
     @Override
-    public List<UserDto> getUsers() {
-        List<User> todos = userRepo.findAll();
-        List<UserDto> dtoList = new ArrayList<>();
-        for (User todo : todos) {
-            dtoList.add(new UserDto(todo));
+    public Page<UserResponseDto> getAll(int page, int size, String[] sorts) {
+        List<Sort.Order> orders = new ArrayList<>();
+
+        if (sorts[0].contains(",")) {
+            //sort more than 2 fields, sortOrder="field, direction"
+            for (String sortOrder : sorts) {
+                String[] sort = sortOrder.split(",");
+                orders.add(new Sort.Order(Sort.Direction.valueOf(sort[1]), sort[0]));
+            }
+        } else {
+            orders.add(new Sort.Order(Sort.Direction.valueOf(sorts[1]), sorts[0]));
         }
-        return dtoList;
+        Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
+        Page<User> pageUsers = userRepo.findAll(pagingSort);
+
+        List<UserResponseDto> userResponse = new ArrayList<>();
+        for (User user : pageUsers.getContent()) {
+            userResponse.add(UserResponseDto.toDto(user));
+        }
+
+        return new PageImpl<>(userResponse);
     }
 
 

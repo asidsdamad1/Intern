@@ -1,18 +1,18 @@
 package com.todolist.service;
 
-import com.todolist.dto.CategoryDto;
-import com.todolist.dto.UserDto;
-
-import java.util.List;
+import com.todolist.dto.request.CategoryRequestDto;
+import com.todolist.dto.response.CategoryResponseDto;
+import com.todolist.dto.response.UserResponseDto;
+import org.springframework.data.domain.Page;
 
 public interface CategoryService {
-    CategoryDto saveOrUpdate(CategoryDto dto, Long id);
+    CategoryResponseDto save(CategoryRequestDto dto);
 
-    CategoryDto getById(Long id);
+    CategoryResponseDto update(CategoryRequestDto dto, Long id);
 
-    List<CategoryDto> getByUser(UserDto userDto);
+    CategoryResponseDto getById(Long id);
 
-    List<CategoryDto> searchByDto(CategoryDto dto);
+    Page<CategoryResponseDto> getAll(int page, int size, String[] sorts, UserResponseDto userResponseDto);
 
     Boolean deleteById(Long id);
 }

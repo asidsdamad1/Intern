@@ -1,46 +1,49 @@
 package com.todolist.rest;
 
-import com.todolist.domain.Role;
 import com.todolist.dto.RoleToUserDto;
-import com.todolist.dto.UserDto;
+import com.todolist.dto.request.UserRequestDto;
+import com.todolist.dto.response.UserResponseDto;
 import com.todolist.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequiredArgsConstructor
+@RequestMapping("/api/admin")
 public class RestUserController {
-    @Autowired
-    private UserService userService;
+    private final UserService service;
 
-
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
-    private ResponseEntity<List<UserDto>> getAll() {
-        return ResponseEntity.ok().body(userService.getUsers());
+    @GetMapping(value = "/users")
+    public ResponseEntity<Page<UserResponseDto>> getAll(
+            @RequestParam(defaultValue = "0") int pageIndex,
+            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "id,ASC") String[] sorts
+    ) {
+        return ResponseEntity.ok(service.getAll(pageIndex, pageSize, sorts));
     }
 
-    @RequestMapping(value = "/users/save", method = RequestMethod.POST)
-    private ResponseEntity<UserDto> saveUser(@RequestBody UserDto dto) {
-        UserDto result = userService.saveUser(dto);
-        return new ResponseEntity<UserDto>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+
+    @PostMapping(value = "/user/save")
+    public ResponseEntity<com.todolist.dto.response.UserResponseDto> saveUser(@RequestBody UserRequestDto dto) {
+        return ResponseEntity.ok(service.saveUser(dto));
     }
 
-    @RequestMapping(value = "/role/save", method = RequestMethod.POST)
-    private ResponseEntity<Role> saveRole(@RequestBody Role role) {
-        Role result = userService.saveRole(role);
-        return new ResponseEntity<Role>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    @PutMapping(value = "/user/{id}")
+    public ResponseEntity<UserResponseDto> update(@RequestBody UserRequestDto dto, @PathVariable Long id) {
+        return ResponseEntity.ok().body(service.updateUser(dto, id));
     }
 
-    @RequestMapping(value = "/role/addtouser", method = RequestMethod.POST)
-    private ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserDto dto) {
-        userService.addRoleToUser(dto.getUsername(), dto.getRoleName());
+    @DeleteMapping(value = "/user/{id}")
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteUser(id));
+    }
+
+
+    @PostMapping(value = "/role/addtouser")
+    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserDto dto) {
+        service.addRoleToUser(dto.getUsername(), dto.getRoleName());
         return ResponseEntity.ok().build();
     }
 

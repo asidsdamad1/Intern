@@ -1,17 +1,20 @@
 package com.todolist.domain;
 
-import org.hibernate.annotations.ManyToAny;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashSet;
 
+@Builder
+@Getter
+@Setter
 @XmlRootElement
-@Table(
-        name = "tbl_role"
-)
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "role")
 @Entity
-public class Role {
+public class Role implements GrantedAuthority {
     @Transient
     private static final long serialVersionUID = 6318192070978248463L;
     @Id
@@ -26,41 +29,8 @@ public class Role {
     )
     private String name;
 
-    public Role() {
-    }
-
-    public Role(String name) {
-        this.name = name;
-    }
-
-
-    public Role(Long id) {
-        this.id = id;
-    }
-
-    public Role(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    @Override
+    public String getAuthority() {
         return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Transient
-    public String toString() {
-        return String.format("Role: %s", this.name);
     }
 }

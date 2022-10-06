@@ -1,27 +1,41 @@
 package com.todolist.exception;
 
+import com.todolist.exception.request.BadRequestException;
+import com.todolist.exception.request.NotFoundException;
+import com.todolist.exception.request.UnauthenticatedException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(value = {ApiResquestException.class})
-    public ResponseEntity<Object> handleApiRequestException(ApiResquestException e) {
-        // 1. create payload containing exception details
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = {BadRequestException.class})
+    public @ResponseBody
+    ExceptionResponse handleApiRequestException(BadRequestException e) {
+        return new ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST, ZonedDateTime.now(ZoneId.of("Z")));
+    }
 
-        ApiException apiException = new ApiException(
-                e.getMessage(),
-                badRequest,
-                ZonedDateTime.now(ZoneId.of("Z"))
-        );
-        // 2. return response entity
-        return new ResponseEntity<>(apiException, badRequest);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(value = {NotFoundException.class})
+    public @ResponseBody
+    ExceptionResponse handleNotFound(NotFoundException e) {
+        return new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND, ZonedDateTime.now(ZoneId.of("Z")));
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(value = {UnauthenticatedException.class})
+    public @ResponseBody
+    ExceptionResponse processSecurityError(Exception e) {
+        return new ExceptionResponse(e.getMessage(), HttpStatus.NOT_FOUND, ZonedDateTime.now(ZoneId.of("Z")));
     }
 }

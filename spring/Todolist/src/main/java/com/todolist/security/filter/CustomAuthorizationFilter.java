@@ -3,6 +3,7 @@ package com.todolist.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todolist.security.jwt.JWTUtils;
 import com.todolist.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,15 +25,14 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component
+@RequiredArgsConstructor
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
-    @Autowired
-    private JWTUtils jwtUtils;
-    @Autowired
-    private UserService userService;
+    private final JWTUtils jwtUtils;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-            final String authorizationHeader = request.getHeader(AUTHORIZATION);
+        final String authorizationHeader = request.getHeader(AUTHORIZATION);
 
         String username = null;
         String jwt = null;
@@ -58,7 +58,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             response.setHeader("error", e.getMessage());
             response.setStatus(FORBIDDEN.value());
-//                    response.sendError(FORBIDDEN.value());
             Map<String, String> error = new HashMap<>();
             error.put("error_message", e.getMessage());
             response.setContentType(APPLICATION_JSON_VALUE);
