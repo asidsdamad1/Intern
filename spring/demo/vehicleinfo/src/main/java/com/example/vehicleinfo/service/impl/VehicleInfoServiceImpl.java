@@ -1,6 +1,7 @@
 package com.example.vehicleinfo.service.impl;
 
 import com.example.vehicleinfo.common.Constants;
+import com.example.vehicleinfo.domain.VehicleInfo;
 import com.example.vehicleinfo.dto.VehicleInfoDto;
 import com.example.vehicleinfo.repository.VehicleInfoRepository;
 import com.example.vehicleinfo.service.VehicleInfoService;
@@ -23,6 +24,26 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     private final VehicleInfoRepository repository;
     private final RedisUtils redisUtils;
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    @Override
+    public VehicleInfoDto save(VehicleInfoDto dto) {
+        if(dto != null) {
+            VehicleInfo entity = VehicleInfo.builder()
+                    .plate(dto.getPlate())
+                    .plateFace(dto.getPlateFace())
+                    .plateFull(dto.getPlateFull())
+                    .startDate(dto.getStartDate())
+                    .state(dto.getState())
+                    .tag(dto.isTag())
+                    .build();
+
+            repository.save(entity);
+
+            redisUtils.deleteKeyFormRedis(dto.getPlate());
+            return VehicleInfoDto.of(entity);
+        }
+        return null;
+    }
 
     @Override
     public VehicleInfoDto getByPlate(String plate, int typeCache) {
