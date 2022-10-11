@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisUtils {
     @Value("${spring.redis.timeout}")
-    private int REDIS_TIMEOUT;
+    private int REDIS_TIME_OUT;
 
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -26,7 +26,7 @@ public class RedisUtils {
             e.printStackTrace();
         }
         redisTemplate.opsForValue().set(key, jsonInString);
-        redisTemplate.expire(key, REDIS_TIMEOUT, TimeUnit.SECONDS);
+        redisTemplate.expire(key, REDIS_TIME_OUT, TimeUnit.SECONDS);
     }
 
     public String getValue(final String key) {
