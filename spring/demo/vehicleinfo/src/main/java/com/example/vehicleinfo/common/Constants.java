@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class Constants {
-    public static final int REDIS_CACHE = 1;
+    public static final int CACHE = 1;
     private static final ObjectMapper MAPPER;
 
     static {

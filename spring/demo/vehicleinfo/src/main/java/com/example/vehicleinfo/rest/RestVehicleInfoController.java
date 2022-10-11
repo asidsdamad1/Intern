@@ -21,7 +21,7 @@ public class RestVehicleInfoController {
 
     @GetMapping
     public ResponseEntity<VehicleInfoDto> getVehicleByPlate(@RequestParam String plate) {
-        return ResponseEntity.ok(service.getByPlate(plate, Constants.REDIS_CACHE));
+        return ResponseEntity.ok(service.getByPlate(plate, Constants.CACHE));
     }
 
 }

@@ -28,7 +28,7 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     public VehicleInfoDto getByPlate(String plate, int typeCache) {
         // find vehicle info in cache
         // null -> find in database
-        if( Constants.REDIS_CACHE == typeCache && getByCache(plate) != null) {
+        if (typeCache == 1 && getByCache(plate) != null) {
             log.info("get vehicle info by cache");
             return getByCache(plate);
         }
@@ -56,7 +56,7 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     public VehicleInfoDto getByCache(String plate) {
         try {
             String content = redisUtils.getValue(plate);
-            if(content !=  null) {
+            if (content != null) {
                 return Constants.map().readValue(content, VehicleInfoDto.class);
             }
         } catch (JsonProcessingException e) {
