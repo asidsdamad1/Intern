@@ -11,13 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,10 +25,9 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
 
-
     @Override
     public VehicleInfoDto save(VehicleInfoDto dto) {
-        if(dto != null) {
+        if (dto != null) {
             VehicleInfo entity = VehicleInfo.builder()
                     .plate(dto.getPlate())
                     .plateFace(dto.getPlateFace())
@@ -55,16 +51,14 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
                 .stream()
                 .map(VehicleInfoDto::of)
                 .collect(Collectors.toList());
-
     }
 
     @Override
-    @Cacheable(cacheNames = "vehicle", key = "#plate",  cacheManager = "cacheManager")
+    @Cacheable(cacheNames = "vehicle", key = "#plate")
     public VehicleInfoDto getByPlate(String plate) {
-        log.info("get vehicle info by db");
-        for (VehicleInfoDto dto : findAllByPlate(plate)) {
+        List<VehicleInfoDto> dtoList = findAllByPlate(plate);
+        for (VehicleInfoDto dto : dtoList) {
             if (dto.getState() == 1) {
-//                redisUtils.setValue("plate", dto);
                 return dto;
             }
         }

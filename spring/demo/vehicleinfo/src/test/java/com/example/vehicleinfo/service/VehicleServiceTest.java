@@ -22,7 +22,7 @@ import static java.util.Optional.ofNullable;
 @SpringBootTest(classes = VehicleInfoApplication.class)
 class VehicleServiceTest {
     @Autowired
-    private VehicleInfoService service;
+    private  VehicleInfoService service;
     @Autowired
     private RedisCacheManager cacheManager;
 

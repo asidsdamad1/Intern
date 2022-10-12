@@ -3,6 +3,8 @@ spring:
     url: jdbc:mysql://localhost:3306/vehicle
     username: root
     password: asidsdamad1
+  profiles:
+    active: dev
 
 cache:
   specs:

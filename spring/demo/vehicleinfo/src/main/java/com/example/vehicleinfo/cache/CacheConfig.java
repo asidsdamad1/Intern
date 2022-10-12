@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -16,6 +17,8 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+//  Spring chỉ khởi tạo và quản lý khi môi trường là những môi trường không phải là `dev`
+@Profile("dev")
 @Configuration
 @EnableCaching
 @RequiredArgsConstructor
@@ -44,6 +47,4 @@ public class CacheConfig extends CachingConfigurerSupport {
         redisStandaloneConfiguration.setPort(redisProperties.getPort());
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
-
-
 }
