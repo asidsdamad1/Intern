@@ -8,8 +8,6 @@ import com.example.vehicleinfo.service.VehicleInfoService;
 import com.example.vehicleinfo.utils.RedisUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
 public class VehicleInfoServiceImpl implements VehicleInfoService {
     private final VehicleInfoRepository repository;
     private final RedisUtils redisUtils;
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
 
     @Override
     public VehicleInfoDto save(VehicleInfoDto dto) {
@@ -39,7 +35,6 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
 
             repository.save(entity);
 
-            redisUtils.deleteKeyFormRedis(dto.getPlate());
             return VehicleInfoDto.of(entity);
         }
         return null;
