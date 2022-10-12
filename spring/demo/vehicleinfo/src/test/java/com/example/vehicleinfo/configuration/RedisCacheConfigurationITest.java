@@ -2,7 +2,7 @@ package com.example.vehicleinfo.configuration;
 
 
 import com.example.vehicleinfo.VehicleInfoApplication;
-import com.example.vehicleinfo.cache.RedisProperties;
+import com.example.vehicleinfo.cache.properties.RedisProperties;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

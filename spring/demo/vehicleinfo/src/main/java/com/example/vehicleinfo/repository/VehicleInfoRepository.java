@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface VehicleInfoRepository extends JpaRepository<VehicleInfo, Long> {
     @Query("select v from VehicleInfo v where v.plate = ?1 order by v.startDate desc")
-    Optional<List<VehicleInfo>> findByPlateOrderByStartDate(String plate);
+    List<VehicleInfo> findByPlateOrderByStartDate(String plate);
 
 }

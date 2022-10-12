@@ -5,21 +5,24 @@ import com.example.vehicleinfo.domain.VehicleInfo;
 import com.example.vehicleinfo.dto.VehicleInfoDto;
 import com.example.vehicleinfo.repository.VehicleInfoRepository;
 import com.example.vehicleinfo.service.VehicleInfoService;
-import com.example.vehicleinfo.utils.RedisUtils;
+import com.example.vehicleinfo.cache.type.RedisUtils;
+import com.example.vehicleinfo.utils.DateUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
-import org.springframework.cache.annotation.Cacheable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class VehicleInfoServiceImpl implements VehicleInfoService {
     private final VehicleInfoRepository repository;
     private final RedisUtils redisUtils;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public VehicleInfoDto save(VehicleInfoDto dto) {
@@ -28,7 +31,7 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
                     .plate(dto.getPlate())
                     .plateFace(dto.getPlateFace())
                     .plateFull(dto.getPlateFull())
-                    .startDate(dto.getStartDate())
+                    .startDate(DateUtils.formatToDate(dto.getStartDate().toString()))
                     .state(dto.getState())
                     .tag(dto.isTag())
                     .build();
@@ -40,24 +43,36 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
         return null;
     }
 
-    public List<VehicleInfoDto> findAllByPlate(String plate) {
-        return repository.findByPlateOrderByStartDate(plate)
-                .orElseThrow(() -> new InvalidConfigurationPropertyValueException("Plate", plate, "Plate can not be found"))
-                .stream()
-                .map(VehicleInfoDto::of)
-                .collect(Collectors.toList());
-    }
 
     @Override
-    @Cacheable(cacheNames = "vehicle", key = "#plate")
     public VehicleInfoDto getByPlate(String plate) {
-        List<VehicleInfoDto> dtoList = findAllByPlate(plate);
-        for (VehicleInfoDto dto : dtoList) {
-            if (dto.getState() == 1) {
-                return dto;
-            }
+        // check cache
+        if(getByCache(plate) != null) {
+            log.info("get vehicle info by cache");
+            return getByCache(plate);
         }
-        throw new InvalidConfigurationPropertyValueException("Plate", plate, "Plate can not be found");
+
+        List<VehicleInfo> vehicleInfos = repository.findByPlateOrderByStartDate(plate);
+
+        VehicleInfoDto result = Stream.ofNullable(vehicleInfos)
+                .flatMap(Collection::stream)
+                .filter(veh  ->  veh.getState() ==  1).findFirst().map(VehicleInfoDto::of).orElseThrow();
+
+        redisUtils.setValue(plate, result);
+
+        return result;
+
     }
 
+    public VehicleInfoDto getByCache(String plate) {
+        try {
+            String content = redisUtils.getValue(plate);
+            if (content != null) {
+                return Constants.map().readValue(content, VehicleInfoDto.class);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
