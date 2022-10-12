@@ -16,7 +16,7 @@ public class RestVehicleInfoController {
 
     @GetMapping
     public ResponseEntity<VehicleInfoDto> getVehicleByPlate(@RequestParam String plate) {
-        return ResponseEntity.ok(service.getByPlate(plate, Constants.CACHE));
+        return ResponseEntity.ok(service.getByPlate(plate));
     }
 
     @PostMapping
@@ -24,4 +24,8 @@ public class RestVehicleInfoController {
         return ResponseEntity.ok(service.save(dto));
     }
 
+    @GetMapping("/cache")
+    public ResponseEntity<VehicleInfoDto> getCache(@RequestParam String plate) {
+        return ResponseEntity.ok(service.getCache(plate));
+    }
 }

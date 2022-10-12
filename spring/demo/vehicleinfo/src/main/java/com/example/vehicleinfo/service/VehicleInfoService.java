@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface VehicleInfoService {
-    VehicleInfoDto getByPlate(String plate, int typeCache);
+    VehicleInfoDto getByPlate(String plate);
+
+    VehicleInfoDto getCache(String plate);
 
     VehicleInfoDto save(VehicleInfoDto vehicleInfoDto);
 

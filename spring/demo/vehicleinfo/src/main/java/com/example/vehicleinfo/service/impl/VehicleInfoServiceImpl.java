@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,8 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     private final VehicleInfoRepository repository;
     private final RedisUtils redisUtils;
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+
 
     @Override
     public VehicleInfoDto save(VehicleInfoDto dto) {
@@ -45,36 +49,30 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
         return null;
     }
 
+    public List<VehicleInfoDto> findAllByPlate(String plate) {
+        return repository.findByPlateOrderByStartDate(plate)
+                .orElseThrow(() -> new InvalidConfigurationPropertyValueException("Plate", plate, "Plate can not be found"))
+                .stream()
+                .map(VehicleInfoDto::of)
+                .collect(Collectors.toList());
+
+    }
+
     @Override
-    public VehicleInfoDto getByPlate(String plate, int typeCache) {
-        // find vehicle info in cache
-        // null -> find in database
-        if (typeCache == 1 && getByCache(plate) != null) {
-            log.info("get vehicle info by cache");
-            return getByCache(plate);
-        }
-
-        List<VehicleInfoDto> vehicleInfos = Optional.of(
-                        repository.findByPlateOrderByStartDate(plate).orElseThrow(null)
-                                .stream()
-                                .map(VehicleInfoDto::of)
-                                .filter(Objects::nonNull).collect(Collectors.toList()))
-                .filter(a -> !a.isEmpty())
-                .orElseThrow(() -> new InvalidConfigurationPropertyValueException("Plate", plate, "Plate can not be found")
-                );
-
+    @Cacheable(cacheNames = "vehicle", key = "#plate",  cacheManager = "cacheManager")
+    public VehicleInfoDto getByPlate(String plate) {
         log.info("get vehicle info by db");
-        for (VehicleInfoDto dto : vehicleInfos) {
+        for (VehicleInfoDto dto : findAllByPlate(plate)) {
             if (dto.getState() == 1) {
-                redisUtils.setValue(dto.getPlate(), dto);
+//                redisUtils.setValue("plate", dto);
                 return dto;
             }
         }
-
         throw new InvalidConfigurationPropertyValueException("Plate", plate, "Plate can not be found");
     }
 
-    public VehicleInfoDto getByCache(String plate) {
+    @Override
+    public VehicleInfoDto getCache(String plate) {
         try {
             String content = redisUtils.getValue(plate);
             if (content != null) {
