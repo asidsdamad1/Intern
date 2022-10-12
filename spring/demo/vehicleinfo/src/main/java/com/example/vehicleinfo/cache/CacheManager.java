@@ -1,12 +1,25 @@
 package com.example.vehicleinfo.cache;
 
+import com.example.vehicleinfo.cache.type.RedisUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
-public abstract class CacheManager {
-    protected abstract String getValue(final String key);
+public class CacheManager {
+    private final RedisUtils cacheUtils;
 
-    protected abstract void setValue(final String key, Object object);
+    @Value("${cache.enable}")
+    private boolean enableCaching;
 
-    protected abstract void deleteKey(String key);
+    @Bean
+    public RedisUtils cacheUtils() {
+        if (enableCaching) {
+            return cacheUtils;
+        }
+        return null;
+    }
+
 }

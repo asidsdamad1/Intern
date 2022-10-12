@@ -1,11 +1,11 @@
 package com.example.vehicleinfo.service.impl;
 
+import com.example.vehicleinfo.cache.CacheManager;
 import com.example.vehicleinfo.common.Constants;
 import com.example.vehicleinfo.domain.VehicleInfo;
 import com.example.vehicleinfo.dto.VehicleInfoDto;
 import com.example.vehicleinfo.repository.VehicleInfoRepository;
 import com.example.vehicleinfo.service.VehicleInfoService;
-import com.example.vehicleinfo.cache.type.RedisUtils;
 import com.example.vehicleinfo.utils.DateUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class VehicleInfoServiceImpl implements VehicleInfoService {
     private final VehicleInfoRepository repository;
-    private final RedisUtils redisUtils;
+    private final CacheManager cacheManager;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
@@ -47,29 +47,42 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     @Override
     public VehicleInfoDto getByPlate(String plate) {
         // check cache
-        if(getByCache(plate) != null) {
+        if (getByCache(plate) != null) {
             log.info("get vehicle info by cache");
             return getByCache(plate);
         }
-
         List<VehicleInfo> vehicleInfos = repository.findByPlateOrderByStartDate(plate);
 
+        log.info("get vehicle info by db");
+        // get vehicle state = 1 and newest date
+        //  java  8
+        /* vehicleInfos.orElseGet(Collections::emptyList).stream()
+             .filter(veh  ->  veh.getState() ==  1).findFirst().map(VehicleInfoDto::of).orElseThrow();
+             */
+
+        // java > 9
         VehicleInfoDto result = Stream.ofNullable(vehicleInfos)
                 .flatMap(Collection::stream)
-                .filter(veh  ->  veh.getState() ==  1).findFirst().map(VehicleInfoDto::of).orElseThrow();
+                .filter(veh -> veh.getState() == 1).findFirst().map(VehicleInfoDto::of).orElseThrow();
 
-        redisUtils.setValue(plate, result);
+        if (cacheManager.cacheUtils() != null) {
+            cacheManager.cacheUtils().setValue(plate, result);
+        }
 
         return result;
 
     }
 
+    // get value in cache
     public VehicleInfoDto getByCache(String plate) {
         try {
-            String content = redisUtils.getValue(plate);
-            if (content != null) {
-                return Constants.map().readValue(content, VehicleInfoDto.class);
+            if (cacheManager.cacheUtils() != null) {
+                String content = cacheManager.cacheUtils().getValue(plate);
+                if (content != null) {
+                    return Constants.map().readValue(content, VehicleInfoDto.class);
+                }
             }
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
