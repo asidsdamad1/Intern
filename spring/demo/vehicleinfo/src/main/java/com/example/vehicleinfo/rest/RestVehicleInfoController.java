@@ -1,6 +1,5 @@
 package com.example.vehicleinfo.rest;
 
-import com.example.vehicleinfo.common.Constants;
 import com.example.vehicleinfo.dto.VehicleInfoDto;
 import com.example.vehicleinfo.service.VehicleInfoService;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +19,7 @@ public class RestVehicleInfoController {
     }
 
     @PostMapping
-    public ResponseEntity<VehicleInfoDto> save(@RequestBody VehicleInfoDto  dto) {
+    public ResponseEntity<VehicleInfoDto> save(@RequestBody VehicleInfoDto dto) {
         return ResponseEntity.ok(service.save(dto));
-    }
-
-    @GetMapping("/cache")
-    public ResponseEntity<VehicleInfoDto> getCache(@RequestParam String plate) {
-        return ResponseEntity.ok(service.getCache(plate));
     }
 }

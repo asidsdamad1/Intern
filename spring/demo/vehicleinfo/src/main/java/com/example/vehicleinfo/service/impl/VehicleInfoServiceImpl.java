@@ -60,16 +60,4 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
         throw new InvalidConfigurationPropertyValueException("Plate", plate, "Plate can not be found");
     }
 
-    @Override
-    public VehicleInfoDto getCache(String plate) {
-        try {
-            String content = redisUtils.getValue(plate);
-            if (content != null) {
-                return Constants.map().readValue(content, VehicleInfoDto.class);
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

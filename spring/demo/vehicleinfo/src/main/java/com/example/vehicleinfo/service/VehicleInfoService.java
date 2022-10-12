@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 public interface VehicleInfoService {
     VehicleInfoDto getByPlate(String plate);
 
-    VehicleInfoDto getCache(String plate);
-
     VehicleInfoDto save(VehicleInfoDto vehicleInfoDto);
 
 }
