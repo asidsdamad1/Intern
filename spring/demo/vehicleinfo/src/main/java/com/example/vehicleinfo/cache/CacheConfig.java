@@ -43,7 +43,6 @@ public class CacheConfig extends CachingConfigurerSupport {
                     .withInitialCacheConfigurations(cacheConfigurations).build();
         }
         return new NoOpCacheManager();
-
     }
 
     @Bean
