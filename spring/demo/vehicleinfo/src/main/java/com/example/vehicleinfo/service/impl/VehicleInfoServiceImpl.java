@@ -65,8 +65,8 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
                 .flatMap(Collection::stream)
                 .filter(veh -> veh.getState() == 1).findFirst().map(VehicleInfoDto::of).orElseThrow();
 
-        if (cacheManager.cacheUtils() != null) {
-            cacheManager.cacheUtils().setValue(plate, result);
+        if (cacheManager.redisUtils() != null) {
+            cacheManager.redisUtils().setValue(plate, result);
         }
 
         return result;
@@ -76,8 +76,8 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     // get value in cache
     public VehicleInfoDto getByCache(String plate) {
         try {
-            if (cacheManager.cacheUtils() != null) {
-                String content = cacheManager.cacheUtils().getValue(plate);
+            if (cacheManager.redisUtils() != null) {
+                String content = cacheManager.redisUtils().getValue(plate);
                 if (content != null) {
                     return Constants.map().readValue(content, VehicleInfoDto.class);
                 }

@@ -46,8 +46,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse refreshToken(HttpServletRequest request) {
-        String tokenPrefix =  jwtUtils.getTokenPrefix();
-        DefaultClaims claims = (DefaultClaims) jwtUtils.extractAllClaims(request.getHeader(AUTHORIZATION).substring(tokenPrefix.length()) );
+        String tokenPrefix = jwtUtils.getTokenPrefix();
+        DefaultClaims claims = (DefaultClaims) jwtUtils.extractAllClaims(request.getHeader(AUTHORIZATION).substring(tokenPrefix.length()));
 
         Map<String, Object> expectedMap = new HashMap<>(claims);
         String token = jwtUtils.doGenerateRefreshToken(expectedMap, expectedMap.get("sub").toString());

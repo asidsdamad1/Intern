@@ -1,7 +1,6 @@
 package com.todolist.service;
 
 import com.todolist.dto.request.SubTodoRequestDto;
-import com.todolist.dto.request.UserRequestDto;
 import com.todolist.dto.response.SubTodoResponseDto;
 import com.todolist.dto.response.UserResponseDto;
 import org.springframework.data.domain.Page;

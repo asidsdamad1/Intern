@@ -19,7 +19,4 @@ public class TodoRequestDto extends BaseDto {
         return Constants.mapper().convertValue(todoRequestDto, Todo.class);
     }
 
-    public TodoRequestDto toDto(Todo entity) {
-        return Constants.mapper().convertValue(entity, TodoRequestDto.class);
-    }
 }

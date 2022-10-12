@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todolist.security.jwt.JWTUtils;
 import com.todolist.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,7 +63,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             new ObjectMapper().writeValue(response.getOutputStream(), error);
 
         }
-
 
     }
 }

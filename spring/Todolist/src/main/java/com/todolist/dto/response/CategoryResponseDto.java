@@ -21,12 +21,11 @@ public class CategoryResponseDto extends BaseDto {
         return toDto(category);
     }
 
-    public static CategoryResponseDto toDto(Category entity) {
-        return Constants.mapper().convertValue(entity, CategoryResponseDto.class);
-    }
-
-
     public static Category toEntity(CategoryResponseDto dto) {
         return Constants.mapper().convertValue(dto, Category.class);
+    }
+
+    public static CategoryResponseDto toDto(Category entity) {
+        return Constants.mapper().convertValue(entity, CategoryResponseDto.class);
     }
 }

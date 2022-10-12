@@ -21,7 +21,7 @@ public class JWTConfig {
     private int expirationDateInMs;
     private int refreshExpirationDateInMs;
 
-    public byte[] getByteSecretKey()  {
+    public byte[] getByteSecretKey() {
         return secretKey.getBytes();
     }
 

@@ -38,7 +38,7 @@ public class RestCategoryController {
 
     @GetMapping(value = "/getAll")
     public ResponseEntity<Page<CategoryResponseDto>> getByPage(
-            @RequestParam(defaultValue = "0") int pageIndex ,
+            @RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(defaultValue = "id,ASC") String[] sorts
     ) {

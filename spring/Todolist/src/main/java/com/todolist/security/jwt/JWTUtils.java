@@ -113,7 +113,7 @@ public class JWTUtils {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getRefreshExpirationDateInMs()))
-                .signWith(jwtConfig.getSecretKey(),  SignatureAlgorithm.HS512).compact();
+                .signWith(jwtConfig.getSecretKey(), SignatureAlgorithm.HS512).compact();
 
     }
 

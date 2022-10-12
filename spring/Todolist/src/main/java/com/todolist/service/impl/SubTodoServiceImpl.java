@@ -5,9 +5,7 @@ import com.todolist.dto.request.SubTodoRequestDto;
 import com.todolist.dto.response.SubTodoResponseDto;
 import com.todolist.dto.response.UserResponseDto;
 import com.todolist.exception.request.BadRequestException;
-import com.todolist.repository.CategoryRepository;
 import com.todolist.repository.SubTodoRepository;
-import com.todolist.repository.TodoRepository;
 import com.todolist.service.SubTodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +55,7 @@ public class SubTodoServiceImpl implements SubTodoService {
                 .map(SubTodoResponseDto::of)
                 .orElseThrow(() ->
                 {
-                    throw new BadRequestException("Cannot find Todo with id " + id);
+                    throw new BadRequestException(String.format("Cannot find Todo with id %s", id));
                 });
     }
 
@@ -91,10 +90,9 @@ public class SubTodoServiceImpl implements SubTodoService {
         Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
         Page<SubTodo> pageTodos = subTodoRepository.findAll(userRequestDto.getId(), pagingSort);
 
-        List<SubTodoResponseDto> todoResponses = new ArrayList<>();
-        for (SubTodo subTodo : pageTodos.getContent()) {
-            todoResponses.add(SubTodoResponseDto.toDto(subTodo));
-        }
+        List<SubTodoResponseDto> todoResponses = pageTodos.getContent().stream()
+                .map(SubTodoResponseDto::toDto)
+                .collect(Collectors.toList());
 
         return new PageImpl<>(todoResponses);
 

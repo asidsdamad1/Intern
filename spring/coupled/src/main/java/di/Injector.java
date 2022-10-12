@@ -17,13 +17,13 @@ public class Injector {
     public static Object getInstance(String key) throws InstanceNotFoundException {
         try (InputStream input = new FileInputStream(IOC_CONFIGURATION_FILE_NAME)) {
             //load a properties file
-            Properties prop =  new Properties();
+            Properties prop = new Properties();
             prop.load(input);
 
             //get the property value
             String className = prop.getProperty(key);
             return Class.forName(className).newInstance();
-        } catch (IOException | InstantiationException  | IllegalAccessException | ClassNotFoundException e) {
+        } catch (IOException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
             throw new InstanceNotFoundException(
                     "Can't create instance of " + key + " base on the configuration of " + IOC_CONFIGURATION_FILE_NAME);

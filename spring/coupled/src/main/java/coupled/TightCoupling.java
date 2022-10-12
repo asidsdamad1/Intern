@@ -2,7 +2,7 @@ package coupled;
 
 class Export1CSV {
     public void export(Object data) {
-        System.out.println("Export " + data  +" with CSV format");
+        System.out.println("Export " + data + " with CSV format");
     }
 }
 
@@ -13,7 +13,7 @@ class Export1Data {
     public Export1Data() {
     }
 
-    public  void exportProcess(Object data) {
+    public void exportProcess(Object data) {
         this.exportCSV.export(data);
     }
 }

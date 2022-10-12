@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "user")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseObject implements UserDetails{
+public class User extends BaseObject implements UserDetails {
     @Column(name = "username")
     private String username;
 

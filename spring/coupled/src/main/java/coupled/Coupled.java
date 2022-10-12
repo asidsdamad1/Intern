@@ -1,13 +1,14 @@
 package coupled;
 
 interface IExport {
-    void export(Object  data);
+    void export(Object data);
 }
 
 class ExportCSV implements IExport {
 
+    @Override
     public void export(Object data) {
-        System.out.println("Export " + data  +" with CSV format");
+        System.out.println("Export " + data + " with CSV format");
     }
 }
 
@@ -15,7 +16,7 @@ class ExportJSON implements IExport {
 
     @Override
     public void export(Object data) {
-        System.out.println("Export " + data  +" with JSON format");
+        System.out.println("Export " + data + " with JSON format");
     }
 }
 
@@ -31,7 +32,7 @@ class ExportData {
         this.iExport = iExport;
     }
 
-    public  void exportProcess(Object data) {
+    public void exportProcess(Object data) {
         this.iExport.export(data);
     }
 }

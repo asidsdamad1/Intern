@@ -18,8 +18,8 @@ public class AuthenticationResponse {
     private String username;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public AuthenticationResponse(String accessToken, int  expired) {
-        this.accessToken  = accessToken;
+    public AuthenticationResponse(String accessToken, int expired) {
+        this.accessToken = accessToken;
         this.expired = expired;
     }
 }

@@ -21,10 +21,10 @@ public class Mapping {
 //        //update
 //        accountService.updateAccount(1L, 12334);
 //        //list
-//        accountService.listAccounts();
+        accountService.listAccounts();
 //        accountService.getById(1L);
 
-        accountService.statistics();
+//        accountService.statistics();
 
     }
 

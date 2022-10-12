@@ -15,7 +15,7 @@ public class CacheManager {
     private boolean enableCaching;
 
     @Bean
-    public RedisUtils cacheUtils() {
+    public RedisUtils redisUtils() {
         if (enableCaching) {
             return cacheUtils;
         }

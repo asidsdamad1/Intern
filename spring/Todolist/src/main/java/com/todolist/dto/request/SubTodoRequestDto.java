@@ -19,7 +19,5 @@ public class SubTodoRequestDto extends BaseDto {
         return Constants.mapper().convertValue(todoRequestDto, SubTodo.class);
     }
 
-    public SubTodoRequestDto toDto(SubTodo entity) {
-        return Constants.mapper().convertValue(entity, SubTodoRequestDto.class);
-    }
+
 }

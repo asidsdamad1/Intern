@@ -44,14 +44,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 });
     }
 
-    public UserResponseDto getByUserName(String username) {
-        return userRepo.findByUsername(username)
-                .map(UserResponseDto::of)
-                .orElseThrow(() -> {
-                    throw new BadRequestException("Username can not be found");
-                });
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.getByUsername(username);
@@ -138,7 +130,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         if (userName != null) {
-            return getByUserName(userName);
+            return UserResponseDto.toDto(userRepo.getByUsername(userName));
         }
 
         return null;

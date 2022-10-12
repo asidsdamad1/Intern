@@ -9,7 +9,7 @@ public class App {
 
         DatabaseInit databaseInit = applicationContext.getBean(DatabaseInit.class);
 
-        for(String s : applicationContext.getBeanDefinitionNames()) {
+        for (String s : applicationContext.getBeanDefinitionNames()) {
             System.out.println(s);
         }
         databaseInit.destroy();

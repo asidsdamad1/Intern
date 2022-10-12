@@ -1,6 +1,8 @@
 package bean;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,8 +19,8 @@ public class DatabaseInit {
     }
 
     @Bean
-    public void getUsername() {
-        System.out.println(listOfUsers.get(0));
+    public void getFirstUsername() {
+        System.out.println(listOfUsers.get(1).getUsername());
     }
 
     @PostConstruct

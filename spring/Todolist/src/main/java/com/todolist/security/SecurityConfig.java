@@ -3,7 +3,6 @@ package com.todolist.security;
 import com.todolist.security.filter.CustomAuthorizationFilter;
 import com.todolist.security.response.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -38,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/signin", "/api/token/refresh").permitAll()
                 .antMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET,"/api/admin/users").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/admin/users").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers("/api/**").authenticated()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)

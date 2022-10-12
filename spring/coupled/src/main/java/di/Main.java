@@ -11,7 +11,7 @@ public class Main {
 //        MessageService messageService = new EmailService();
         MessageService messageService = (MessageService) Injector.getInstance("messageService");
 
-        UserController  userController = new UserController(messageService);
+        UserController userController = new UserController(messageService);
         userController.send();
     }
 
