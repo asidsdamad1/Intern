@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/vehicle
+    username: root
+    password: asidsdamad1
+  devtools:
+    livereload:
+      enabled : false
+
+cache:
+  specs:
+    redis:
+      host: localhost
+      port: 6379
+      default-ttl: 15
+  enable: true
