@@ -8,6 +8,11 @@ class VehicleinfoApplicationTests {
 
     @Test
     void contextLoads() {
+        //  java  8
+        /* vehicleInfos.orElseGet(Collections::emptyList).stream()
+             .filter(veh  ->  veh.getState() ==  1).findFirst().map(VehicleInfoDto::of).orElseThrow();
+             */
+
     }
 
 }

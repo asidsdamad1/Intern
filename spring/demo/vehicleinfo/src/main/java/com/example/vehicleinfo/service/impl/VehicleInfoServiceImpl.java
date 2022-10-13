@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -23,6 +24,10 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     private final VehicleInfoRepository repository;
     private final CacheManager cacheManager;
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    @Value("${cache.enable}")
+    private boolean enableCaching;
+
 
     @Override
     public VehicleInfoDto save(VehicleInfoDto dto) {
@@ -55,18 +60,13 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
 
         log.info("get vehicle info by db");
         // get vehicle state = 1 and newest date
-        //  java  8
-        /* vehicleInfos.orElseGet(Collections::emptyList).stream()
-             .filter(veh  ->  veh.getState() ==  1).findFirst().map(VehicleInfoDto::of).orElseThrow();
-             */
-
         // java > 9
         VehicleInfoDto result = Stream.ofNullable(vehicleInfos)
                 .flatMap(Collection::stream)
                 .filter(veh -> veh.getState() == 1).findFirst().map(VehicleInfoDto::of).orElseThrow();
 
-        if (cacheManager.redisUtils() != null) {
-            cacheManager.redisUtils().setValue(plate, result);
+        if (enableCaching) {
+            cacheManager.getCache().setValue(plate, result);
         }
 
         return result;
@@ -76,8 +76,8 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     // get value in cache
     public VehicleInfoDto getByCache(String plate) {
         try {
-            if (cacheManager.redisUtils() != null) {
-                String content = cacheManager.redisUtils().getValue(plate);
+            if (enableCaching) {
+                String content = cacheManager.getCache().getValue(plate);
                 if (content != null) {
                     return Constants.map().readValue(content, VehicleInfoDto.class);
                 }

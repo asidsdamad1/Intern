@@ -11,14 +11,13 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class RedisUtils {
+public class RedisUtils implements Cache {
     @Value("${cache.specs.redis.default-ttl}")
     private int redisTTL;
     private final RedisTemplate<String, String> redisTemplate;
 
+    @Override
     public void setValue(final String key, Object object) {
-        // config enable cache
-
         String jsonInString = "";
         try {
             jsonInString = Constants.map().writeValueAsString(object);
@@ -30,10 +29,12 @@ public class RedisUtils {
 
     }
 
+    @Override
     public String getValue(final String key) {
         return redisTemplate.opsForValue().get(key);
     }
 
+    @Override
     public void deleteKey(String key) {
         redisTemplate.delete(key);
     }

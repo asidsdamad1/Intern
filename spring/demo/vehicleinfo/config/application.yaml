@@ -10,4 +10,4 @@ cache:
       host: localhost
       port: 6379
       default-ttl: 15
-  enable: true
+  enable: false
