@@ -2,6 +2,7 @@ package com.example.vehicleinfo.service.impl;
 
 import com.example.vehicleinfo.cache.CacheManager;
 import com.example.vehicleinfo.common.Constants;
+import com.example.vehicleinfo.config.AppProperties;
 import com.example.vehicleinfo.domain.VehicleInfo;
 import com.example.vehicleinfo.dto.VehicleInfoDto;
 import com.example.vehicleinfo.repository.VehicleInfoRepository;
@@ -9,9 +10,9 @@ import com.example.vehicleinfo.service.VehicleInfoService;
 import com.example.vehicleinfo.utils.DateUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -25,9 +26,7 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     private final CacheManager cacheManager;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Value("${cache.enable}")
-    private boolean enableCaching;
-
+    private final AppProperties enableCaching;
 
     @Override
     public VehicleInfoDto save(VehicleInfoDto dto) {
@@ -48,7 +47,6 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
         return null;
     }
 
-
     @Override
     public VehicleInfoDto getByPlate(String plate) {
         // check cache
@@ -65,7 +63,7 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
                 .flatMap(Collection::stream)
                 .filter(veh -> veh.getState() == 1).findFirst().map(VehicleInfoDto::of).orElseThrow();
 
-        if (enableCaching) {
+        if (Boolean.parseBoolean(enableCaching.enableCacheProperty())) {
             cacheManager.getCache().setValue(plate, result);
         }
 
@@ -76,7 +74,7 @@ public class VehicleInfoServiceImpl implements VehicleInfoService {
     // get value in cache
     public VehicleInfoDto getByCache(String plate) {
         try {
-            if (enableCaching) {
+            if (Boolean.parseBoolean(enableCaching.enableCacheProperty())) {
                 String content = cacheManager.getCache().getValue(plate);
                 if (content != null) {
                     return Constants.map().readValue(content, VehicleInfoDto.class);
