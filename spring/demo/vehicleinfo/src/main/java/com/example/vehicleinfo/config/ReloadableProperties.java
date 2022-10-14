@@ -24,7 +24,7 @@ public abstract class ReloadableProperties {
     private long lastModTime = 0L;
     private PropertySource<?> appConfigPropertySource = null;
     private Path configPath;
-    private static final String PROPERTY_NAME = "enableCache.yaml";
+    private static final String PROPERTY_NAME = "dynamicProperties.yaml";
 
     @PostConstruct
     private void stopIfProblemsCreatingContext() {

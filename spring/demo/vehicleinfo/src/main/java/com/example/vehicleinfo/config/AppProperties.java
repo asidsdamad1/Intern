@@ -5,7 +5,7 @@ import org.springframework.core.env.StandardEnvironment;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource("classpath:/enableCache.yaml")
+@PropertySource("classpath:/dynamicProperties.yaml")
 public class AppProperties extends ReloadableProperties {
     public AppProperties(StandardEnvironment environment) {
         super(environment);
